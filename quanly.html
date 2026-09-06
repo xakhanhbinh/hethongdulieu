@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trung tâm Điều hành & Quản lý - Xã Khánh Bình</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 CSS & JS (Thay thế alert/confirm mặc định của trình duyệt) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        :root {
+            --bg-body: #f8fafc;
+            --bg-sidebar: #0b1329;
+            --text-sidebar: #94a3b8;
+            --text-sidebar-active: #ffffff;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --border-color: #e2e8f0;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.02);
+            --shadow-md: 0 10px 25px -5px rgba(0, 51, 102, 0.12);
+            --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        body { display: flex; height: 100vh; background-color: var(--bg-body); color: var(--text-main); overflow: hidden; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .animated-fade-in { animation: fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        /* ================= SIDEBAR TRÁI CẢI TIẾN ================= */
+        .sidebar { 
+            width: 300px; 
+            background-color: var(--bg-sidebar); 
+            border-right: 1px solid rgba(255, 255, 255, 0.05); 
+            display: flex; 
+            flex-direction: column; 
+            height: 100%; 
+            z-index: 20; 
+            color: var(--text-sidebar);
+            box-shadow: 4px 0 24px rgba(0,0,0,0.06);
+        }
+
+        .sidebar-brand { 
+            padding: 15px 24px; 
+            display: flex; 
+            align-items: center; 
+            gap: 14px; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06); 
+            background: #060913;
+        }
+        
+        .sidebar-logo {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.3));
+        }
+
+        .sidebar-brand-text h2 { font-size: 0.9rem; font-weight: 700; color: #f8fafc; text-transform: uppercase; letter-spacing: 0.6px; }
+        .sidebar-brand-text p { font-size: 0.72rem; color: #38bdf8; font-weight: 600; margin-top: 2px; }
+
+        .menu-list { list-style: none; padding: 12px 14px; overflow-y: auto; flex: 1; }
+        .menu-list::-webkit-scrollbar { width: 5px; }
+        .menu-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+        .menu-label { 
+            padding: 16px 12px 8px; 
+            font-size: 0.68rem; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            color: #64748b; 
+            letter-spacing: 1px; 
+        }
+
+        .submenu { 
+            list-style: none; 
+            max-height: 2000px; 
+            overflow: hidden; 
+            transition: max-height 0.4s cubic-bezier(0, 1, 0, 1); 
+            padding-left: 6px;
+        }
+        .submenu.open { max-height: 2000px; transition: max-height 0.5s ease-in-out; }
+
+        .submenu-item { 
+            padding: 9px 12px; 
+            font-size: 0.83rem; 
+            font-weight: 500; 
+            color: #94a3b8; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            margin: 3px 0; 
+            border-radius: 8px; 
+            transition: var(--transition-fast); 
+            border: 1px solid transparent;
+        }
+        .submenu-item i { 
+            width: 20px; 
+            text-align: center; 
+            font-size: 0.9rem; 
+            color: #64748b; 
+            transition: var(--transition-fast); 
+        }
+        .submenu-item:hover { 
+            background-color: rgba(255, 255, 255, 0.06); 
+            color: #f8fafc; 
+            transform: translateX(3px); 
+        }
+        .submenu-item:hover i { color: #38bdf8; }
+        
+        .submenu-item.active { 
+            background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%); 
+            color: #ffffff; 
+            font-weight: 600; 
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4); 
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .submenu-item.active i { color: #ffffff; }
+
+        /* ================= MAIN CONTENT ================= */
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; height: 100%; }
+
+        .top-header { 
+            height: 64px; 
+            background-color: var(--card-bg); 
+            padding: 0 28px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid var(--border-color); 
+            z-index: 100;
+        }
+
+        .header-actions { display: flex; align-items: center; gap: 14px; position: relative; }
+
+        .user-profile { 
+            display: flex; align-items: center; gap: 10px; 
+            background: #f8fafc; padding: 6px 14px 6px 8px; 
+            border-radius: 30px; border: 1px solid var(--border-color); 
+        }
+        .avatar-container { position: relative; width: 34px; height: 34px; }
+        .avatar { 
+            width: 100%; height: 100%; border-radius: 50%; 
+            background: linear-gradient(135deg, #0f172a, #2563eb); 
+            color: #fff; display: flex; align-items: center; justify-content: center; 
+            font-weight: 700; font-size: 0.85rem; object-fit: cover;
+            border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+        .user-info { display: flex; flex-direction: column; }
+        .user-name { font-size: 0.85rem; font-weight: 700; color: var(--text-main); line-height: 1.2; }
+        .user-role { font-size: 0.72rem; color: #2563eb; font-weight: 600; }
+
+        .btn-logout { 
+            background: #fee2e2; color: #dc2626; border: none; 
+            padding: 8px 14px; border-radius: 8px; font-size: 0.8rem; 
+            font-weight: 600; cursor: pointer; transition: var(--transition-fast); 
+            display: flex; align-items: center; gap: 6px;
+        }
+        .btn-logout:hover { background: #fca5a5; transform: translateY(-1px); }
+
+        .workspace-layout { display: flex; flex: 1; overflow: hidden; }
+        .content-body { flex: 1; overflow-y: auto; position: relative; background: #f8fafc; }
+
+        .dashboard-container { padding: 32px; }
+        .welcome-card { 
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #38bdf8 100%); 
+            color: #fff; border-radius: 16px; padding: 36px; 
+            box-shadow: 0 15px 30px -5px rgba(37, 99, 235, 0.25); 
+            margin-bottom: 28px; position: relative; overflow: hidden;
+        }
+        .welcome-card::after {
+            content: ''; position: absolute; right: -50px; bottom: -50px;
+            width: 250px; height: 250px; background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%; pointer-events: none;
+        }
+        .welcome-card h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 10px; }
+        .welcome-card p { opacity: 0.95; font-size: 0.95rem; max-width: 680px; line-height: 1.6; }
+
+        .table-card { 
+            background: #fff; border: 1px solid var(--border-color); border-radius: 14px; 
+            overflow: hidden; box-shadow: var(--shadow-sm); margin-bottom: 28px; padding: 24px; 
+        }
+        .table-tools { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; gap: 12px; flex-wrap: wrap; }
+        .table-toolbar-actions { display: flex; align-items: center; gap: 8px; }
+        
+        .search-box-input { 
+            padding: 9px 16px; border: 1px solid var(--border-color); border-radius: 8px; 
+            width: 280px; font-size: 0.875rem; outline: none; 
+        }
+        .search-box-input:focus { border-color: var(--primary); }
+
+        .data-table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; font-size: 0.85rem; }
+        .data-table th { 
+            background: #f8fafc; padding: 14px 16px; font-weight: 700; color: #0f172a; 
+            border-bottom: 2px solid var(--border-color); text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.6px; 
+        }
+        .data-table td { padding: 14px 16px; border-bottom: 1px solid var(--border-color); color: var(--text-main); vertical-align: middle; }
+        .data-table tbody tr:hover { background: #f1f5f9; }
+
+        .btn-toolbar { 
+            padding: 8px 14px; border: 1px solid var(--border-color); border-radius: 8px; 
+            font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: var(--transition-fast); 
+            display: inline-flex; align-items: center; gap: 6px; background: #fff; color: var(--text-main); 
+        }
+        .btn-toolbar:hover { background: #f1f5f9; border-color: #cbd5e1; }
+        .btn-toolbar.btn-lock { color: var(--warning); border-color: #fde68a; background: #fffbeb; }
+        .btn-toolbar.btn-lock:hover { background: #fef3c7; }
+        .btn-toolbar.btn-unlock { color: var(--success); border-color: #a7f3d0; background: #ecfdf5; }
+        .btn-toolbar.btn-unlock:hover { background: #d1fae5; }
+        .btn-toolbar.btn-edit-action { color: var(--primary); border-color: #bfdbfe; background: #eff6ff; }
+        .btn-toolbar.btn-edit-action:hover { background: #dbeafe; }
+        .btn-toolbar.btn-del-action { color: var(--danger); border-color: #fecaca; background: #fef2f2; }
+        .btn-toolbar.btn-del-action:hover { background: #fee2e2; }
+
+        .badge-status { padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; display: inline-block; }
+        .badge-active { background: #d1fae5; color: #065f46; }
+        .badge-locked { background: #fee2e2; color: #991b1b; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+            display: none; justify-content: center; align-items: center; z-index: 2000;
+        }
+        .modal-card {
+            background: #fff; width: 440px; border-radius: 14px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            overflow: hidden; animation: fadeInUp 0.3s ease-out;
+        }
+        .modal-header { padding: 16px 20px; background: #f8fafc; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { font-size: 1rem; font-weight: 700; color: var(--text-main); }
+        .modal-close { background: none; border: none; font-size: 1rem; cursor: pointer; color: var(--text-muted); }
+        .modal-body { padding: 20px; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-main); margin-bottom: 6px; }
+        .form-group input { width: 100%; padding: 9px 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.875rem; outline: none; }
+        .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        .modal-footer { padding: 12px 20px; background: #f8fafc; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 8px; }
+
+        .app-iframe-container { width: 100%; height: 100%; display: none; border: none; background: #fff; position: relative; }
+        .iframe-loading {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%; animation: shimmer 1.5s infinite;
+            display: flex; justify-content: center; align-items: center;
+            color: var(--text-muted); font-weight: 600; font-size: 1rem; gap: 10px;
+        }
+        iframe { width: 100%; height: 100%; border: none; position: relative; z-index: 2; }
+
+        .page-container { padding: 32px; display: none; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .page-title h2 { font-size: 1.35rem; font-weight: 700; color: var(--text-main); }
+        .page-title p { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+
+        /* Style tùy chỉnh cho SweetAlert2 để đồng bộ giao diện */
+        .swal2-popup {
+            font-family: 'Inter', sans-serif !important;
+            border-radius: 16px !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR TRÁI -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <img src="qh.png" alt="Logo Xã Khánh Bình" class="sidebar-logo">
+            <div class="sidebar-brand-text">
+                <h2>QUẢN LÝ DỮ LIỆU</h2>
+                <p>XÃ KHÁNH BÌNH</p>
+            </div>
+        </div>
+
+        <ul class="menu-list">
+            <li class="submenu-item active" id="btn-home" onclick="showHome(this)">
+                <i class="fa-solid fa-chart-pie"></i> Báo cáo Tổng hợp
+            </li>
+
+            <li class="submenu-item" id="btn-users" onclick="showUsersPage(this)">
+                <i class="fa-solid fa-users-gear"></i> Quản lý Tài khoản & Quyền
+            </li>
+
+            <div class="menu-label">Giám sát Ban ngành</div>
+
+            <ul class="submenu open" id="bannganh-menu">
+                <li class="submenu-item" data-url="https://script.google.com/macros/s/AKfycbx9nGHtmhUvJeDcQh_a7lMZnk8NIKApbJs7ilAFMvaeAVL75kzUVyyRcOMOZifcGEik3Q/exec" onclick="loadAppScript(this, 'Ban Kiểm tra')"><i class="fa-solid fa-file-shield"></i> 1. Ủy Ban Kiểm tra Đảng ủy</li>
+                <li class="submenu-item" data-url="https://script.google.com/macros/s/AKfycbz9bGC7OewE1pSFDkeVLNCHr87p_hdi5Cq0Lz4YYBFBAu2m4QoVrB1z-4bJl_dt4mxX/exec" onclick="loadAppScript(this, 'Ban Xây dựng Đảng')"><i class="fa-solid fa-pen-fancy"></i> 2. Ban Xây dựng Đảng</li>
+                <li class="submenu-item" data-url="https://script.google.com/macros/s/AKfycbzW3oeesgVkhWJLC6mDrOoswaXFfXXc2t2jS5wnpzTcYg-wk3Yp-86URt608abwlXLz/exec" onclick="loadAppScript(this, 'Phòng Kinh tế')"><i class="fa-solid fa-chart-line"></i> 3. Phòng Kinh tế</li>
+                <li class="submenu-item" data-url="https://script.google.com/macros/s/AKfycbyZLrFKb7kXkAg4l88oWfX49jUZv_w_4NyNgBbyt66AztNwAcLLOH7OWf0aAZhYzg_R/exec" onclick="loadAppScript(this, 'TT Hành chính công')"><i class="fa-solid fa-id-card-clip"></i> 4. Trung tâm PVHCC</li>
+                <li class="submenu-item" data-url="https://script.google.com/macros/s/AKfycbxYjqm5pMZniM0cV1saCS2webV_oxxxvo84PDpSx1_sxIVPID_G-_C4fXS_li9krW27/exec" onclick="loadAppScript(this, 'Trung tâm Công ích')"><i class="fa-solid fa-hand-holding-heart"></i> 5. Trung tâm Công ích</li>
+                <li class="submenu-item" data-url="https://script.google.com/macros/s/AKfycbyCiu0muQSj5cNP4tu4sXTxnUgOEeuMryaWd_n5ebNZ4z4roZ-OXP-6xx2GHt3UDT6d/exec" onclick="loadAppScript(this, 'Phòng Văn hóa')"><i class="fa-solid fa-masks-theater"></i> 6. Phòng Văn hóa - Xã Hội*</li>
+                <li class="submenu-item" data-url="https://script.google.com/macros/s/AKfycbyVClZtnVRlCmEoM9Cyw1qlPJWNxgrWhnRKIWbFIsh9FhT4hTct2Dj7nDaT_a9EQNX3_g/exec" onclick="loadAppScript(this, 'Công an Xã')"><i class="fa-solid fa-shield-cat"></i> 7. Công an Xã</li>
+                <li class="submenu-item" data-url="https://script.google.com/macros/s/AKfycbzSpbl-WBlzPIgAGWfAEnL-zkMQtppkPD7XRo_Eqbe3zyh-BbTmBfdGkn7rbzeUQEOW/exec" onclick="loadAppScript(this, 'Quân sự Xã')"><i class="fa-solid fa-person-military-to-person"></i> 8. Quân sự Xã</li>
+                <li class="submenu-item" data-url="https://script.google.com/macros/s/AKfycbxjuZ9a2Bsd3dMQLPbCif0djm4ZpIkS9kcgBg_E3Cw1XLqU9dzKlvGuqkszd9CVwFm_/exec" onclick="loadAppScript(this, 'Ban MTTQ Việt Nam')"><i class="fa-solid fa-hands-holding"></i> 9. Ban MTTQ Việt Nam</li>
+                <li class="submenu-item" data-url="https://script.google.com/macros/s/AKfycbwPYI9xVSBfffhT_6usG5N4INqrK-SAC-yDUpNNbbxTQc1qPRw06hdKQ0Ye5KbtCkbo/exec" onclick="loadAppScript(this, 'Hội Nông dân')"><i class="fa-solid fa-wheat-awn"></i> 10. Hội Nông dân</li>
+                <li class="submenu-item" data-url="https://script.google.com/macros/s/AKfycbxb99eDbGN6gX0WEz88tXl7l17WHUqnardaspH2BtO5tLTeD51nyhRurYf0irQJoFrpCQ/exec" onclick="loadAppScript(this, 'Hội Liên hiệp Phụ nữ')"><i class="fa-solid fa-person-dress"></i> 11. Hội LH Phụ nữ</li>
+                <li class="submenu-item" data-url="https://script.google.com/macros/s/AKfycbxb9ML2uI5nMrSl3zaNcvTH5KVRPzWze-U4ysUXggyO-1N9ZSbdtADN6d8CFaM1XLA/exec" onclick="loadAppScript(this, 'Hội Cựu chiến binh')"><i class="fa-solid fa-medal"></i> 12. Hội Cựu chiến binh</li>
+                <li class="submenu-item" data-url="https://script.google.com/macros/s/AKfycbw7QOqun61AKNiPRIsNVism77TIV-qKyhVxtRX2U--cLe8phbd8AZd_ZjFwTQYH6omt9A/exec" onclick="loadAppScript(this, 'Đoàn Thanh niên')"><i class="fa-solid fa-flag"></i> 13. Đoàn Thanh niên</li>
+                <li class="submenu-item" data-url="https://script.google.com/macros/s/AKfycbwOcBMslWOYTV368cvqE4K8KyU0CB8YVFCSmTf2ho08yK75HHfC9Jk-eXKbW7PkDrzztQ/exec" onclick="loadAppScript(this, 'Hội Người cao tuổi')"><i class="fa-solid fa-person-cane"></i> 14. Hội Người cao tuổi</li>
+                <li class="submenu-item" data-url="https://script.google.com/macros/s/AKfycbwXxolQSmuqif5muCFohejmw_9P5ZoeKmJK42zyKbf8zXp928SWgVF19b6udnVGZ5xq/exec" onclick="loadAppScript(this, 'Hội Chữ thập đỏ - Đông y')"><i class="fa-solid fa-kit-medical"></i> 15. Hội Chữ thập đỏ</li>
+                <li class="submenu-item" data-url="https://script.google.com/macros/s/AKfycbwe_Jn4TvH8i-wt6RGgVqdRpFiosslrdiaVyObLVH_I_l864AGTTG5VPavxinfiGvRN5w/exec" onclick="loadAppScript(this, 'Hội Khuyến học')"><i class="fa-solid fa-graduation-cap"></i> 16. Hội Khuyến học</li>
+                <li class="submenu-item" data-url="https://script.google.com/macros/s/AKfycbzloY-WUdHUXxntvfIvyN32165z2Ct_9-e2B7yyotV2BDXKrzp042RbaE65lcckCUOP/exec" onclick="loadAppScript(this, 'Hội Nạn nhân CĐDC')"><i class="fa-solid fa-wheelchair"></i> 17. Hội Nạn nhân CĐDC</li>
+            </ul>
+        </ul>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="top-header">
+            <div class="search-bar" style="position: relative; width: 320px;">
+                <input type="text" placeholder="Tra cứu báo cáo, tiến độ hồ sơ..." style="width: 100%; padding: 9px 16px 9px 40px; border-radius: 20px; border: 1px solid var(--border-color); background: #f8fafc; font-size: 0.875rem; outline: none;">
+                <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+            </div>
+
+            <div class="header-actions">
+                <div class="user-profile">
+                    <div class="avatar-container" title="Ảnh đại diện hệ thống">
+                        <div class="avatar" id="userAvatarDisplay">QL</div>
+                    </div>
+                    
+                    <div class="user-info">
+                        <span class="user-name">Quản trị viên</span>
+                        <span class="user-role">Cấp Quản lý</span>
+                    </div>
+                </div>
+                <button class="btn-logout" onclick="logout()" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i> ĐĂNG XUẤT</button>
+            </div>
+        </div>
+
+        <div class="workspace-layout">
+            <div class="content-body">
+                
+                <!-- TRANG CHỦ -->
+                <div id="homeDashboard" class="dashboard-container animated-fade-in">
+                    <div class="welcome-card">
+                        <div>
+                            <h2>Trung tâm Điều hành & Giám sát Dữ liệu Số xã Khánh Bình</h2>
+                            <p>Chào mừng Quản lý đến với bảng chỉ đạo trực tuyến xã Khánh Bình. Xem báo cáo tổng hợp hoặc giám sát trực tiếp dữ liệu ban ngành ở danh mục bên trái.</p>
+                        </div>
+                    </div>
+
+                    <div class="metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 28px;">
+                        <div class="metric-card" style="background: #fff; padding: 20px; border-radius: 14px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 16px;">
+                            <div style="width: 48px; height: 48px; background: #eff6ff; color: var(--primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                                <i class="fa-solid fa-sitemap"></i>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Ban ngành</span>
+                                <h3 style="font-size: 1.35rem; font-weight: 700; color: var(--text-main); margin-top: 2px;">17 Đơn vị</h3>
+                            </div>
+                        </div>
+
+                        <div class="metric-card" style="background: #fff; padding: 20px; border-radius: 14px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 16px;">
+                            <div style="width: 48px; height: 48px; background: #ecfdf5; color: var(--success); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                                <i class="fa-solid fa-user-check"></i>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Tài khoản hoạt động</span>
+                                <h3 style="font-size: 1.35rem; font-weight: 700; color: var(--text-main); margin-top: 2px;" id="statActiveUsers">--</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TRANG QUẢN LÝ TÀI KHOẢN -->
+                <div id="usersPage" class="page-container animated-fade-in">
+                    <div class="page-header">
+                        <div class="page-title">
+                            <h2>Quản lý Cán bộ & Điều khiển Tài khoản</h2>
+                            <p>Thực hiện khóa, mở khóa, chỉnh sửa thông tin hoặc xóa tài khoản cán bộ trực tiếp.</p>
+                        </div>
+                    </div>
+
+                    <div class="card table-card">
+                        <div class="table-tools">
+                            <div class="table-toolbar-actions">
+                                <button class="btn-toolbar btn-lock" onclick="batchUpdateStatus('locked')"><i class="fa-solid fa-lock"></i> Khóa</button>
+                                <button class="btn-toolbar btn-unlock" onclick="batchUpdateStatus('active')"><i class="fa-solid fa-lock-open"></i> Mở khóa</button>
+                                <button class="btn-toolbar btn-edit-action" onclick="openEditModalSelected()"><i class="fa-solid fa-pen-to-square"></i> Sửa thông tin</button>
+                                <button class="btn-toolbar btn-del-action" onclick="batchDeleteUsers()"><i class="fa-solid fa-trash"></i> Xóa mục chọn</button>
+                            </div>
+                            <input type="text" class="search-box-input" id="searchInput" placeholder="Tìm kiếm cán bộ..." onkeyup="filterUsers()">
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="data-table" id="userTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40px;"><input type="checkbox" id="selectAllCheckbox" onclick="toggleSelectAll(this)"></th>
+                                        <th>Mã Cán bộ (User)</th>
+                                        <th>Họ và Tên</th>
+                                        <th>Đơn vị / Bộ phận</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Render động -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KHUNG IFRAME NHẬP LIỆU -->
+                <div id="appView" class="app-iframe-container animated-fade-in">
+                    <div class="iframe-loading" id="iframeLoader">
+                        <i class="fa-solid fa-circle-notch fa-spin"></i> Đang kết nối...
+                    </div>
+                    <iframe id="appScriptIframe" src="" allow="clipboard-write" onload="hideIframeLoader()"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CHỈNH SỬA TÀI KHOẢN -->
+    <div class="modal-overlay" id="editUserModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Chỉnh sửa Thông tin & Mật khẩu</h3>
+                <button class="modal-close" onclick="closeEditModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editUserIndex">
+                <div class="form-group">
+                    <label>Mã Cán bộ (Tên đăng nhập)</label>
+                    <input type="text" id="editUsername" placeholder="Nhập mã cán bộ...">
+                </div>
+                <div class="form-group">
+                    <label>Họ và Tên</label>
+                    <input type="text" id="editFullname" placeholder="Nhập họ và tên...">
+                </div>
+                <div class="form-group">
+                    <label>Đơn vị / Bộ phận</label>
+                    <input type="text" id="editDepartment" placeholder="Nhập đơn vị...">
+                </div>
+                <div class="form-group">
+                    <label>Mật khẩu mới (Bỏ trống nếu không đổi)</label>
+                    <input type="text" id="editPassword" placeholder="Nhập mật khẩu mới...">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-toolbar" onclick="closeEditModal()">Hủy bỏ</button>
+                <button class="btn-toolbar btn-edit-action" onclick="saveUserChanges()"><i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+    // Điền URL Web App Google Apps Script của bạn vào đây
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyhfnIHBwVk0uEIIJPvpn25hVWathwiU0ZHRpUnG4qLLNJOF9lXX63c1xNdRfkVqoe7/exec";
+
+    let cachedUsers = []; // Mảng lưu tạm dữ liệu tài khoản từ Google Sheets
+
+    document.addEventListener('DOMContentLoaded', function() {
+        startRealtimeClock();
+        loadUsersToTable();
+        loadSavedAvatar();
+    });
+
+    function startRealtimeClock() {
+        function updateClock() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            let timeString = now.toLocaleDateString('vi-VN', options);
+            const clockEl = document.getElementById('clockText');
+            if (clockEl) clockEl.innerText = timeString;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+    }
+
+    function loadSavedAvatar() {
+        const savedAvatar = localStorage.getItem('admin_custom_avatar');
+        if (savedAvatar) applyAvatar(savedAvatar);
+    }
+
+    function applyAvatar(imgSrc) {
+        const container = document.getElementById('userAvatarDisplay');
+        container.innerHTML = `<img src="${imgSrc}" alt="Avatar" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+    }
+
+    // 1. TẢI DANH SÁCH TÀI KHOẢN TỪ GOOGLE SHEETS LÊN BẢNG
+    async function loadUsersToTable() {
+        const tbody = document.querySelector("#userTable tbody");
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color: var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải danh sách tài khoản cán bộ...</td></tr>`;
+
+        try {
+            const res = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: 'getUsers' })
+            });
+            const data = await res.json();
+
+            if (data.result === 'success') {
+                cachedUsers = data.users;
+                tbody.innerHTML = '';
+
+                if (cachedUsers.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-muted); padding:20px;">Chưa có dữ liệu cán bộ.</td></tr>`;
+                    updateDashboardMetrics();
+                    return;
+                }
+
+                cachedUsers.forEach((u, index) => {
+                    const tr = document.createElement('tr');
+                    const statusClass = (u.status === 'active') ? 'badge-active' : 'badge-locked';
+                    const statusLabel = (u.status === 'active') ? 'Hoạt động' : 'Đã khóa';
+
+                    tr.innerHTML = `
+                        <td><input type="checkbox" class="row-checkbox" data-username="${u.username}" data-index="${index}"></td>
+                        <td><strong>${u.username}</strong></td>
+                        <td>${u.fullname}</td>
+                        <td>${u.department}</td>
+                        <td><span class="badge-status ${statusClass}">${statusLabel}</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                document.getElementById('selectAllCheckbox').checked = false;
+                updateDashboardMetrics();
+            }
+        } catch (error) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--danger); padding:20px;">Lỗi kết nối tới dữ liệu Google Sheets!</td></tr>`;
+        }
+    }
+
+    function toggleSelectAll(source) {
+        const checkboxes = document.querySelectorAll('.row-checkbox');
+        checkboxes.forEach(cb => cb.checked = source.checked);
+    }
+
+    function getSelectedUsernames() {
+        const checkboxes = document.querySelectorAll('.row-checkbox:checked');
+        let usernames = [];
+        checkboxes.forEach(cb => usernames.push(cb.getAttribute('data-username')));
+        return usernames;
+    }
+
+    // 2. KHÓA / MỞ KHÓA TÀI KHOẢN TRÊN GOOGLE SHEETS
+    async function batchUpdateStatus(newStatus) {
+        let usernames = getSelectedUsernames();
+        if (usernames.length === 0) {
+            Swal.fire({ icon: 'info', title: 'Thông báo', text: 'Vui lòng chọn ít nhất một cán bộ!', confirmButtonColor: '#2563eb' });
+            return;
+        }
+
+        Swal.fire({ title: 'Đang cập nhật...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+        try {
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: 'updateStatus', usernames: usernames, newStatus: newStatus })
+            });
+            Swal.fire({ icon: 'success', title: 'Thành công', text: 'Đã cập nhật trạng thái!', timer: 1500, showConfirmButton: false });
+            loadUsersToTable();
+        } catch (e) {
+            Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Không thể cập nhật trạng thái!' });
+        }
+    }
+
+    // 3. XÓA TÀI KHOẢN TRÊN GOOGLE SHEETS
+    function batchDeleteUsers() {
+        let usernames = getSelectedUsernames();
+        if (usernames.length === 0) {
+            Swal.fire({ icon: 'info', title: 'Thông báo', text: 'Vui lòng chọn ít nhất một cán bộ để xóa!', confirmButtonColor: '#2563eb' });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Xác nhận xóa',
+            text: `Bạn có chắc muốn xóa ${usernames.length} tài khoản?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Đồng ý xóa',
+            cancelButtonText: 'Hủy bỏ'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                Swal.fire({ title: 'Đang xóa...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                try {
+                    await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({ action: 'deleteUsers', usernames: usernames })
+                    });
+                    Swal.fire({ icon: 'success', title: 'Đã xóa!', text: 'Dữ liệu đã được xóa!', timer: 1500, showConfirmButton: false });
+                    loadUsersToTable();
+                } catch (e) {
+                    Swal.fire({ icon: 'error', title: 'Lỗi', text: 'Xóa tài khoản thất bại!' });
+                }
+            }
+        });
+    }
+
+    // 4. MỞ MODAL CHỈNH SỬA
+    function openEditModalSelected() {
+        const checkboxes = document.querySelectorAll('.row-checkbox:checked');
+        if (checkboxes.length === 0) {
+            Swal.fire({ icon: 'info', title: 'Thông báo', text: 'Vui lòng chọn cán bộ cần sửa!', confirmButtonColor: '#2563eb' });
+            return;
+        }
+        if (checkboxes.length > 1) {
+            Swal.fire({ icon: 'warning', title: 'Lưu ý', text: 'Chỉ chọn 1 cán bộ để chỉnh sửa!', confirmButtonColor: '#2563eb' });
+            return;
+        }
+
+        let index = parseInt(checkboxes[0].getAttribute('data-index'));
+        let user = cachedUsers[index];
+
+        document.getElementById('editUserIndex').value = user.username; // Lưu tên đăng nhập cũ
+        document.getElementById('editUsername').value = user.username || '';
+        document.getElementById('editFullname').value = user.fullname || '';
+        document.getElementById('editDepartment').value = user.department || '';
+        document.getElementById('editPassword').value = '';
+
+        document.getElementById('editUserModal').style.display = 'flex';
+    }
+
+    function closeEditModal() {
+        document.getElementById('editUserModal').style.display = 'none';
+    }
+
+    // 5. LƯU THAY ĐỔI VÀO GOOGLE SHEETS
+    async function saveUserChanges() {
+        let oldUsername = document.getElementById('editUserIndex').value;
+        let newUsername = document.getElementById('editUsername').value.trim();
+        let newFullname = document.getElementById('editFullname').value.trim();
+        let newDepartment = document.getElementById('editDepartment').value.trim();
+        let newPassword = document.getElementById('editPassword').value;
+
+        if (!newUsername || !newFullname) {
+            Swal.fire({ icon: 'warning', title: 'Thiếu thông tin', text: 'Mã cán bộ và Họ tên không được trống!', confirmButtonColor: '#2563eb' });
+            return;
+        }
+
+        Swal.fire({ title: 'Đang lưu...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+        try {
+            const res = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({
+                    action: 'editUser',
+                    oldUsername: oldUsername,
+                    username: newUsername,
+                    fullname: newFullname,
+                    department: newDepartment,
+                    password: newPassword
+                })
+            });
+            const data = await res.json();
+
+            if (data.result === 'success') {
+                closeEditModal();
+                Swal.fire({ icon: 'success', title: 'Thành công', text: 'Thông tin đã được cập nhật!', timer: 1500, showConfirmButton: false });
+                loadUsersToTable();
+            } else {
+                Swal.fire({ icon: 'error', title: 'Thất bại', text: data.message });
+            }
+        } catch (e) {
+            Swal.fire({ icon: 'error', title: 'Lỗi hệ thống', text: 'Không thể cập nhật tài khoản!' });
+        }
+    }
+
+    function filterUsers() {
+        const input = document.getElementById("searchInput").value.toLowerCase();
+        const rows = document.querySelectorAll("#userTable tbody tr");
+        rows.forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(input) ? "" : "none";
+        });
+    }
+
+    function updateDashboardMetrics() {
+        let activeCount = cachedUsers.filter(u => u.status === 'active').length;
+        const elActive = document.getElementById('statActiveUsers');
+        if (elActive) elActive.innerText = activeCount + " / " + cachedUsers.length;
+    }
+
+    function clearActiveState() {
+        document.querySelectorAll('.submenu-item').forEach(el => el.classList.remove('active'));
+    }
+
+    function triggerAnimation(elementId) {
+        const el = document.getElementById(elementId);
+        el.classList.remove('animated-fade-in');
+        void el.offsetWidth;
+        el.classList.add('animated-fade-in');
+    }
+
+    function hideAllSections() {
+        document.getElementById("homeDashboard").style.display = "none";
+        document.getElementById("usersPage").style.display = "none";
+        document.getElementById("appView").style.display = "none";
+    }
+
+    function showHome(element) {
+        clearActiveState();
+        if (element) element.classList.add('active');
+        hideAllSections();
+        document.getElementById("homeDashboard").style.display = "block";
+        triggerAnimation("homeDashboard");
+        document.getElementById("appScriptIframe").src = ""; 
+    }
+
+    function showUsersPage(element) {
+        clearActiveState();
+        if (element) element.classList.add('active');
+        hideAllSections();
+        document.getElementById("usersPage").style.display = "block";
+        triggerAnimation("usersPage");
+        document.getElementById("appScriptIframe").src = "";
+        loadUsersToTable();
+    }
+
+    function loadAppScript(element, deptName) {
+        let webAppUrl = element.getAttribute("data-url");
+        if (!webAppUrl || webAppUrl.startsWith("THAY_LINK_")) {
+            Swal.fire({ icon: 'warning', title: 'Chưa cấu hình', text: `Ban ngành "${deptName}" chưa có liên kết!`, confirmButtonColor: '#2563eb' });
+            return;
+        }
+        clearActiveState();
+        element.classList.add('active');
+        hideAllSections();
+        document.getElementById("appView").style.display = "block";
+        document.getElementById("iframeLoader").style.display = "flex";
+        triggerAnimation("appView");
+        document.getElementById("appScriptIframe").src = webAppUrl;
+    }
+
+    function hideIframeLoader() {
+        document.getElementById("iframeLoader").style.display = "none";
+    }
+
+    function logout() {
+        Swal.fire({
+            title: 'Đăng xuất',
+            text: 'Bạn có chắc chắn muốn đăng xuất?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#2563eb',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Đăng xuất',
+            cancelButtonText: 'Hủy'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "index.html";
+            }
+        });
+    }
+</script>
+</body>
+</html>

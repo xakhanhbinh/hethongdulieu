@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- VỊ TRÍ 1: Thay đổi tên Tab trình duyệt -->
+  <title>Hội chữ thập đỏ - Xã Khánh Bình</title>
+
+  <!-- Tích hợp SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #f0f4f8;
+    }
+
+    .header-bar {
+      height: 60px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0284c7 100%);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      position: relative;
+      z-index: 100;
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-title h1 {
+      font-size: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #f8fafc;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-action {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      backdrop-filter: blur(4px);
+    }
+
+    .btn-action:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .user-profile-container {
+      position: relative;
+      margin-left: 8px;
+    }
+
+    .btn-user-profile {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 4px 12px 4px 6px;
+      border-radius: 30px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #ffffff;
+      transition: all 0.25s ease;
+    }
+
+    .btn-user-profile:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      background: #38bdf8;
+      color: #0f172a;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-name-text {
+      font-size: 13px;
+      font-weight: 600;
+      max-width: 140px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .profile-dropdown {
+      position: absolute;
+      top: calc(100% + 12px);
+      right: 0;
+      width: 260px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      border: 1px solid #e2e8f0;
+      padding: 16px;
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 1000;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .profile-dropdown.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-header {
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 12px;
+    }
+
+    .dropdown-user-name {
+      color: #0f172a;
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .dropdown-user-dept {
+      color: #0284c7;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .dropdown-info-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .dropdown-info-val {
+      color: #334155;
+      font-weight: 600;
+    }
+
+    .btn-logout-menu {
+      width: 100%;
+      padding: 10px;
+      background-color: #ef4444;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .btn-logout-menu:hover {
+      background-color: #dc2626;
+    }
+
+    .iframe-container {
+      width: 100%;
+      height: calc(100vh - 60px);
+      position: relative;
+      background-color: #ffffff;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+      transition: opacity 0.4s ease;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid #e0f2fe;
+      border-top: 4px solid #0284c7;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 16px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      color: #0369a1;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .swal2-popup {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+      border-radius: 12px !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header-bar">
+    <div class="header-title">
+      <!-- VỊ TRÍ 2: Thay đổi Tiêu đề Header -->
+      <h1>Hội chữ thập đỏ - Xã Khánh Bình</h1>
+    </div>
+    <div class="header-actions">
+      <button class="btn-action" onclick="refreshIframe()" title="Tải lại dữ liệu">🔄 Làm mới</button>
+
+      <div class="user-profile-container">
+        <button class="btn-user-profile" id="userProfileBtn" onclick="toggleProfileDropdown(event)">
+          <div class="avatar" id="avatarText">CB</div>
+          <span class="user-name-text" id="headerFullName">Cán bộ</span>
+          <span style="font-size: 10px;">▼</span>
+        </button>
+
+        <div class="profile-dropdown" id="profileDropdown">
+          <div class="dropdown-header">
+            <div class="dropdown-user-name" id="dropdownFullName">Cán bộ Phụ trách</div>
+            <!-- VỊ TRÍ 3: Tên ngành hiển thị trong menu cá nhân -->
+            <div class="dropdown-user-dept" id="dropdownDept">Họi chữ thập đỏ</div>
+          </div>
+          <div class="dropdown-info-item">
+            <span>Mã đăng nhập:</span>
+            <span class="dropdown-info-val" id="dropdownUsername">...</span>
+          </div>
+          <div class="dropdown-info-item">
+            <span>Trạng thái:</span>
+            <span class="dropdown-info-val" style="color: #16a34a;">● Hoạt động</span>
+          </div>
+          <button type="button" class="btn-logout-menu" onclick="handleLogout()">🚪 ĐĂNG XUẤT</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="iframe-container">
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="spinner"></div>
+      <!-- VỊ TRÍ 4: Thông báo Loading tương ứng -->
+      <div class="loading-text" id="loadingText">Đang kết nối dữ liệu Hội chữ thập đỏ...</div>
+    </div>
+    <!-- VỊ TRÍ 5: Dán Link Web App Script tương ứng của Ngành -->
+    <iframe id="appScriptIframe" src="https://script.google.com/macros/s/AKfycbwXxolQSmuqif5muCFohejmw_9P5ZoeKmJK42zyKbf8zXp928SWgVF19b6udnVGZ5xq/exec" allow="geolocation; microphone; camera; open-url" onload="hideLoading()"></iframe>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Đặt Tên Ngành Mặc Định cho trường hợp chưa lưu localStorage
+      const fallbackDept = 'Hội chữ thập đỏ';
+
+      const username = localStorage.getItem('currentUser') || 'canbo_khanhbinh';
+      const fullname = localStorage.getItem('currentFullName') || 'Cán bộ Phụ trách';
+      const dept = localStorage.getItem('currentDept') || fallbackDept;
+
+      document.getElementById('headerFullName').innerText = fullname;
+      document.getElementById('dropdownFullName').innerText = fullname;
+      document.getElementById('dropdownDept').innerText = dept;
+      document.getElementById('dropdownUsername').innerText = username;
+
+      const firstLetter = fullname.trim().charAt(0).toUpperCase() || 'C';
+      document.getElementById('avatarText').innerText = firstLetter;
+    });
+
+    function toggleProfileDropdown(e) {
+      e.stopPropagation();
+      document.getElementById('profileDropdown').classList.toggle('active');
+    }
+
+    window.addEventListener('click', function(e) {
+      const dropdown = document.getElementById('profileDropdown');
+      const btn = document.getElementById('userProfileBtn');
+      if (dropdown && !dropdown.contains(e.target) && !btn.contains(e.target)) {
+        dropdown.classList.remove('active');
+      }
+    });
+
+    function handleLogout() {
+      Swal.fire({
+        title: 'Đăng xuất hệ thống?',
+        text: 'Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Đăng xuất',
+        cancelButtonText: 'Hủy bỏ'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          localStorage.removeItem('currentUser');
+          localStorage.removeItem('currentFullName');
+          localStorage.removeItem('currentDept');
+          window.location.href = 'index.html';
+        }
+      });
+    }
+
+    function hideLoading() {
+      const overlay = document.getElementById('loadingOverlay');
+      if (overlay) {
+        overlay.style.opacity = '0';
+        setTimeout(() => { overlay.style.display = 'none'; }, 400);
+      }
+    }
+
+    function refreshIframe() {
+      const overlay = document.getElementById('loadingOverlay');
+      if (overlay) {
+        overlay.style.display = 'flex';
+        overlay.style.opacity = '1';
+      }
+      const iframe = document.getElementById('appScriptIframe');
+      iframe.src = iframe.src;
+    }
+
+    let isLockedAlertShown = false;
+    setInterval(function() {
+      const currentUsername = localStorage.getItem('currentUser');
+      if (!currentUsername || isLockedAlertShown) return;
+
+      const registeredUsers = JSON.parse(localStorage.getItem('registered_users') || '[]');
+      const matchedUser = registeredUsers.find(u => u.username === currentUsername);
+
+      if (matchedUser && matchedUser.status === 'locked') {
+        isLockedAlertShown = true;
+        Swal.fire({
+          icon: 'warning',
+          title: 'Tài khoản bị khóa',
+          text: 'Tài khoản của bạn đã bị Quản trị viên khóa hệ thống. Phiên làm việc sẽ kết thúc.',
+          confirmButtonColor: '#003366',
+          allowOutsideClick: false
+        }).then(() => {
+          localStorage.removeItem('currentUser');
+          localStorage.removeItem('currentFullName');
+          localStorage.removeItem('currentDept');
+          window.location.href = 'index.html';
+        });
+      }
+    }, 3000);
+  </script>
+</body>
+
+</html>
