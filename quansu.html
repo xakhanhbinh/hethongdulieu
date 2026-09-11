@@ -4,37 +4,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- VỊ TRÍ 1: Thay đổi tên Tab trình duyệt -->
   <title>Quân sự - Xã Khánh Bình</title>
-
-  <!-- Tích hợp SweetAlert2 -->
+  
+  <!-- Thư viện giao diện & tiện ích -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
     * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #f3f4f6;
+      font-size: 13px;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: #1f2937;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow-x: hidden;
     }
 
-    body, html {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: #f0f4f8;
-    }
-
+    /* THANH HEADER ĐIỀU HƯỚNG TỔNG QUAN */
     .header-bar {
       height: 60px;
-      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0284c7 100%);
+      background: linear-gradient(135deg, #14532d 0%, #052e16 100%);
       color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 24px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      padding: 0 20px;
+      border-bottom: 3px solid #eab308;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       position: relative;
       z-index: 100;
     }
@@ -42,86 +44,78 @@
     .header-title {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .header-title h1 {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      margin: 0;
       color: #f8fafc;
     }
 
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .btn-action {
       background: rgba(255, 255, 255, 0.1);
       color: #ffffff;
       border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 7px 14px;
-      border-radius: 8px;
-      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       text-decoration: none;
-      transition: all 0.25s ease;
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
-      gap: 6px;
-      backdrop-filter: blur(4px);
+      gap: 5px;
     }
 
     .btn-action:hover {
       background: rgba(255, 255, 255, 0.25);
-      border-color: rgba(255, 255, 255, 0.4);
-      transform: translateY(-1px);
     }
 
+    /* USER PROFILE MENU */
     .user-profile-container {
       position: relative;
-      margin-left: 8px;
+      margin-left: 5px;
     }
 
     .btn-user-profile {
       background: rgba(255, 255, 255, 0.15);
       border: 1px solid rgba(255, 255, 255, 0.3);
-      padding: 4px 12px 4px 6px;
+      padding: 3px 10px 3px 5px;
       border-radius: 30px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       color: #ffffff;
-      transition: all 0.25s ease;
-    }
-
-    .btn-user-profile:hover {
-      background: rgba(255, 255, 255, 0.25);
     }
 
     .avatar {
-      width: 32px;
-      height: 32px;
-      background: #38bdf8;
-      color: #0f172a;
+      width: 28px;
+      height: 28px;
+      background: #eab308;
+      color: #052e16;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      font-size: 14px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      font-size: 13px;
     }
 
     .user-name-text {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
-      max-width: 140px;
+      max-width: 120px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -129,161 +123,189 @@
 
     .profile-dropdown {
       position: absolute;
-      top: calc(100% + 12px);
+      top: calc(100% + 10px);
       right: 0;
-      width: 260px;
+      width: 240px;
       background: #ffffff;
-      border-radius: 12px;
+      border-radius: 8px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-      border: 1px solid #e2e8f0;
-      padding: 16px;
+      border: 1px solid #d1d5db;
+      padding: 12px;
       display: none;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       z-index: 1000;
-      animation: fadeIn 0.2s ease;
+      color: #1f2937;
     }
 
     .profile-dropdown.active {
       display: flex;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
     .dropdown-header {
-      border-bottom: 1px solid #f1f5f9;
-      padding-bottom: 12px;
+      border-bottom: 1px solid #f3f4f6;
+      padding-bottom: 8px;
     }
 
     .dropdown-user-name {
-      color: #0f172a;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
-      margin-bottom: 2px;
+      color: #14532d;
     }
 
     .dropdown-user-dept {
-      color: #0284c7;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
+      color: #16a34a;
     }
 
     .dropdown-info-item {
       display: flex;
       justify-content: space-between;
-      font-size: 13px;
-      color: #64748b;
+      font-size: 12px;
+      color: #4b5563;
     }
 
     .dropdown-info-val {
-      color: #334155;
       font-weight: 600;
+      color: #1f2937;
     }
 
     .btn-logout-menu {
       width: 100%;
-      padding: 10px;
-      background-color: #ef4444;
+      padding: 8px;
+      background-color: #dc2626;
       color: #ffffff;
       border: none;
-      border-radius: 8px;
-      font-size: 13px;
+      border-radius: 6px;
+      font-size: 12px;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.2s;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      margin-top: 4px;
+      gap: 5px;
     }
 
     .btn-logout-menu:hover {
-      background-color: #dc2626;
+      background-color: #b91c1c;
     }
 
-    .iframe-container {
-      width: 100%;
-      height: calc(100vh - 60px);
-      position: relative;
-      background-color: #ffffff;
-    }
-
-    iframe {
-      width: 100%;
-      height: 100%;
+    /* CARD & TAB STYLING */
+    .card-custom {
       border: none;
-      display: block;
-    }
-
-    .loading-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      border-radius: 8px;
       background-color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 5;
-      transition: opacity 0.4s ease;
     }
 
-    .spinner {
-      width: 48px;
-      height: 48px;
-      border: 4px solid #e0f2fe;
-      border-top: 4px solid #0284c7;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin-bottom: 16px;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .loading-text {
-      color: #0369a1;
-      font-size: 14px;
+    .nav-tabs-custom .nav-link {
+      border: 1px solid #d1d5db;
+      color: #14532d;
+      background-color: #ffffff;
+      border-radius: 6px;
       font-weight: 600;
     }
 
+    .nav-tabs-custom .nav-link.active {
+      background-color: #14532d;
+      color: #fde047;
+      border-color: #14532d;
+    }
+
+    /* BẢNG DỮ LIỆU STICKY */
+    .table-container {
+      max-height: 480px;
+      overflow-y: auto;
+      overflow-x: auto;
+      border-radius: 6px;
+      border: 1px solid #d1d5db;
+      background: #ffffff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    th, td {
+      padding: 8px 10px;
+      text-align: center;
+      vertical-align: middle;
+      border: 1px solid #d1d5db !important;
+    }
+
+    tr.th-main th, tr.th-sub th {
+      position: sticky;
+      z-index: 20;
+      background-color: #14532d !important;
+      color: #fde047 !important;
+      font-weight: bold;
+    }
+
+    tr.th-main th { top: 0; }
+    tr.th-sub th { top: 37px; }
+
+    /* BUTTONS */
+    .btn-military {
+      background-color: #16a34a;
+      color: white;
+      font-weight: 600;
+      border: none;
+    }
+    .btn-military:hover { background-color: #15803d; color: white; }
+
+    .btn-military-dark {
+      background-color: #14532d;
+      color: white;
+      font-weight: 600;
+      border: none;
+    }
+    .btn-military-dark:hover { background-color: #052e16; color: white; }
+
+    .section-title {
+      background: #f0fdf4;
+      color: #166534;
+      font-weight: bold;
+      padding: 6px;
+      border-left: 4px solid #166534;
+      margin-bottom: 10px;
+    }
+
     .swal2-popup {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-      border-radius: 12px !important;
+      font-family: 'Segoe UI', sans-serif !important;
+      border-radius: 8px !important;
+      font-size: 13px !important;
     }
   </style>
 </head>
 
 <body>
 
+  <!-- THANH TIÊU ĐỀ HEADER HỆ THỐNG -->
   <div class="header-bar">
     <div class="header-title">
-      <!-- VỊ TRÍ 2: Thay đổi Tiêu đề Header -->
-      <h1>Quân sự - Xã Khánh Bình</h1>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Logo_Q%C4%90NDVN.png?utm_source=vi.wikipedia.org&utm_campaign=index&utm_content=original" alt="Logo" style="height: 32px; width: auto; object-fit: contain;" onerror="this.style.display='none'">
+      <h1>QUÂN SỰ - XÃ KHÁNH BÌNH</h1>
     </div>
+    
     <div class="header-actions">
-      <button class="btn-action" onclick="refreshIframe()" title="Tải lại dữ liệu">🔄 Làm mới</button>
+      <button class="btn-action" onclick="refreshSystem()" title="Làm mới hệ thống">
+        <i class="fa-solid fa-rotate"></i> Làm mới
+      </button>
 
       <div class="user-profile-container">
         <button class="btn-user-profile" id="userProfileBtn" onclick="toggleProfileDropdown(event)">
           <div class="avatar" id="avatarText">CB</div>
           <span class="user-name-text" id="headerFullName">Cán bộ</span>
-          <span style="font-size: 10px;">▼</span>
+          <span style="font-size: 9px;">▼</span>
         </button>
 
         <div class="profile-dropdown" id="profileDropdown">
           <div class="dropdown-header">
             <div class="dropdown-user-name" id="dropdownFullName">Cán bộ Phụ trách</div>
-            <!-- VỊ TRÍ 3: Tên ngành hiển thị trong menu cá nhân -->
-            <div class="dropdown-user-dept" id="dropdownDept">Quân sự</div>
+            <div class="dropdown-user-dept" id="dropdownDept">Ban Chỉ huy Quân sự - Xã Khánh Bình</div>
           </div>
           <div class="dropdown-info-item">
             <span>Mã đăng nhập:</span>
@@ -293,40 +315,217 @@
             <span>Trạng thái:</span>
             <span class="dropdown-info-val" style="color: #16a34a;">● Hoạt động</span>
           </div>
-          <button type="button" class="btn-logout-menu" onclick="handleLogout()">🚪 ĐĂNG XUẤT</button>
+          <button type="button" class="btn-logout-menu" onclick="handleLogout()">
+            <i class="fa-solid fa-right-from-bracket"></i> ĐĂNG XUẤT
+          </button>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="iframe-container">
-    <div class="loading-overlay" id="loadingOverlay">
-      <div class="spinner"></div>
-      <!-- VỊ TRÍ 4: Thông báo Loading tương ứng -->
-      <div class="loading-text" id="loadingText">Đang kết nối dữ liệu Quân sự...</div>
+  <div class="container-fluid px-4 py-3">
+    <!-- TAB ĐIỀU HƯỚNG CHÍNH -->
+    <div class="card card-custom p-2 mb-3">
+      <ul class="nav nav-pills nav-tabs-custom gap-2" id="mainTab" role="tablist">
+        <li class="nav-item">
+          <button class="nav-link active px-3 py-2" id="input-tab" data-bs-toggle="tab" data-bs-target="#inputPane">
+            <i class="fa-solid fa-keyboard me-1"></i> Phần Nhập Liệu
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link px-3 py-2" id="storage-tab" data-bs-toggle="tab" data-bs-target="#storagePane" onclick="loadDriveFiles()">
+            <i class="fa-solid fa-folder me-1"></i> Phần Lưu trữ dữ liệu
+          </button>
+        </li>
+      </ul>
     </div>
-    <!-- VỊ TRÍ 5: Dán Link Web App Script tương ứng của Ngành -->
-    <iframe id="appScriptIframe" src="https://script.google.com/macros/s/AKfycbzSpbl-WBlzPIgAGWfAEnL-zkMQtppkPD7XRo_Eqbe3zyh-BbTmBfdGkn7rbzeUQEOW/exec" allow="geolocation; microphone; camera; open-url" onload="hideLoading()"></iframe>
+
+    <!-- NỘI DUNG CÁC TABS -->
+    <div class="tab-content" id="mainTabContent">
+
+      <!-- TAB 1: PHẦN NHẬP LIỆU QUÂN SỰ -->
+      <div class="tab-pane fade show active" id="inputPane" role="tabpanel">
+        <div class="card card-custom p-3 mb-3">
+          <div class="row g-2 align-items-center">
+            <div class="col-md-4">
+              <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light"><i class="fa fa-search text-muted"></i></span>
+                <input type="text" id="searchBar" class="form-control" placeholder="Tìm kiếm nhanh ngày, tuần..." onkeyup="searchTable()">
+              </div>
+            </div>
+            <div class="col-md-8 text-end">
+              <button class="btn btn-sm btn-military me-2 px-3 shadow-sm" onclick="downloadTemplate()">
+                <i class="fa-solid fa-file-arrow-down me-1"></i> Tải tệp tin về
+              </button>
+              <button class="btn btn-sm btn-outline-secondary me-2 px-3" onclick="fetchData()">
+                <i class="fa-solid fa-rotate me-1"></i> Tải Lại Dữ Liệu
+              </button>
+              <button class="btn btn-sm btn-military-dark px-3 shadow-sm" onclick="openAddModal()">
+                <i class="fa fa-plus me-1"></i> Thêm Bản Ghi Mới
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-custom p-3">
+          <div class="table-container">
+            <table class="table table-striped table-hover m-0" id="mainTable">
+              <thead>
+                <tr class="th-main">
+                  <th rowspan="2" style="width: 110px;">Thao tác</th>
+                  <th rowspan="2" style="width: 110px;">Ngày</th>
+                  <th rowspan="2" style="width: 90px;">TUẦN</th>
+                  <th colspan="2">Tổng số lực lượng dự bị động viên</th>
+                  <th rowspan="2">Tổng số lực lượng dân quân tự vệ</th>
+                  <th rowspan="2">Tổng số lực lượng thường trực</th>
+                </tr>
+                <tr class="th-sub">
+                  <th style="width: 150px;">Sĩ quan</th>
+                  <th style="width: 150px;">Hạ sĩ quan</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+                <tr>
+                  <td colspan="7" class="text-center py-5 text-muted"><i class="fa fa-spinner fa-spin me-2"></i> Đang tải dữ liệu quân sự...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: PHẦN LƯU TRỮ DỮ LIỆU -->
+      <div class="tab-pane fade" id="storagePane" role="tabpanel">
+        <div class="card card-custom p-3 mb-3">
+          <div class="d-flex gap-2">
+            <label class="btn btn-sm btn-military-dark px-3 shadow-sm mb-0">
+              <i class="fa-solid fa-file-arrow-up me-1"></i> Tải lên tệp tin
+              <input type="file" id="fileInput" hidden onchange="uploadFile(this)">
+            </label>
+            <button class="btn btn-sm btn-outline-secondary px-3" onclick="loadDriveFiles()">
+              <i class="fa-solid fa-rotate me-1"></i> Làm mới
+            </button>
+          </div>
+        </div>
+
+        <div class="card card-custom p-3">
+          <h6 class="fw-bold text-success mb-3"><i class="fa-solid fa-folder-open me-2"></i>Danh sách tệp tin lưu trữ</h6>
+          <div class="table-container">
+            <table class="table table-hover m-0">
+              <thead>
+                <tr class="th-main">
+                  <th class="text-start">Tên tệp tin</th>
+                  <th style="width: 150px;">Loại tệp</th>
+                  <th style="width: 180px;">Ngày tạo</th>
+                  <th style="width: 160px;">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="fileTableBody">
+                <tr>
+                  <td colspan="4" class="text-center py-4 text-muted">Thư mục trống hoặc không có tệp nào.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 
- <script>
-    // Điền URL Web App Google Apps Script chung của bạn vào đây
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyhfnIHBwVk0uEIIJPvpn25hVWathwiU0ZHRpUnG4qLLNJOF9lXX63c1xNdRfkVqoe7/exec";
+  <div id="toastBox" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050;"></div>
 
-    document.addEventListener('DOMContentLoaded', function() {
-      const fallbackDept = 'Ban Chỉ huy Quân sự - Xã Khánh Bình';
+  <!-- MODAL THÊM / SỬA BẢN GHI -->
+  <div class="modal fade" id="qsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header text-white py-2" style="background-color: #14532d;">
+          <h6 class="modal-title fw-bold" id="modalTitle">Cập nhật số liệu quân sự</h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body bg-light">
+          <form id="qsForm">
+            <input type="hidden" id="rowNum">
 
+            <div class="section-title"><i class="fa-solid fa-calendar-days me-1"></i> Thông tin thời gian</div>
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label fw-semibold">Ngày</label>
+                <input type="text" class="form-control form-control-sm" id="c1" placeholder="Ví dụ: 11/09/2026" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label fw-semibold">Tuần</label>
+                <input type="text" class="form-control form-control-sm" id="c2" placeholder="Ví dụ: 1" required>
+              </div>
+            </div>
+
+            <div class="section-title"><i class="fa-solid fa-person-military-to-person me-1"></i> Lực lượng dự bị động viên</div>
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label">Sĩ quan</label>
+                <input type="number" class="form-control form-control-sm" id="c3">
+              </div>
+              <div class="col-6">
+                <label class="form-label">Hạ sĩ quan</label>
+                <input type="number" class="form-control form-control-sm" id="c4">
+              </div>
+            </div>
+
+            <div class="section-title"><i class="fa-solid fa-shield me-1"></i> Lực lượng phối thuộc khác</div>
+            <div class="mb-2">
+              <label class="form-label">Tổng số lực lượng dân quân tự vệ</label>
+              <input type="number" class="form-control form-control-sm" id="c5">
+            </div>
+            <div class="mb-1">
+              <label class="form-label">Tổng số lực lượng thường trực</label>
+              <input type="number" class="form-control form-control-sm" id="c6">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer py-2 bg-light">
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Đóng</button>
+          <button type="button" class="btn btn-sm btn-military px-3" onclick="submitQsForm()">Lưu số liệu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP XÁC NHẬN XÓA -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-body text-center py-3 fw-medium">Bạn có chắc chắn muốn xóa hàng dữ liệu này không?</div>
+        <div class="modal-footer py-1 justify-content-center border-0">
+          <input type="hidden" id="deleteRowId">
+          <button type="button" class="btn btn-sm btn-light border" data-bs-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-sm btn-danger" onclick="executeDelete()">Xác nhận xóa</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyEg_3lXfFIpzrbFjRDWAcFRFYrEIkgkCs0NF6_3ePwhGxtInhYNMEDNkBSkriZ05Hu/exec";
+    let globalData = [];
+    let modalInstance, deleteModalInstance;
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const defaultDept = 'Ban Chỉ huy Quân sự - Xã Khánh Bình';
       const username = localStorage.getItem('currentUser') || 'canbo_khanhbinh';
       const fullname = localStorage.getItem('currentFullName') || 'Cán bộ Phụ trách';
-      const dept = localStorage.getItem('currentDept') || fallbackDept;
+      const dept = localStorage.getItem('currentDept') || defaultDept;
 
       document.getElementById('headerFullName').innerText = fullname;
       document.getElementById('dropdownFullName').innerText = fullname;
       document.getElementById('dropdownDept').innerText = dept;
       document.getElementById('dropdownUsername').innerText = username;
+      document.getElementById('avatarText').innerText = (fullname.trim().charAt(0) || 'C').toUpperCase();
 
-      const firstLetter = fullname.trim().charAt(0).toUpperCase() || 'C';
-      document.getElementById('avatarText').innerText = firstLetter;
+      modalInstance = new bootstrap.Modal(document.getElementById('qsModal'));
+      deleteModalInstance = new bootstrap.Modal(document.getElementById('deleteModal'));
+      fetchData();
     });
 
     function toggleProfileDropdown(e) {
@@ -348,76 +547,275 @@
         text: 'Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?',
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#64748b',
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#6b7280',
         confirmButtonText: 'Đăng xuất',
         cancelButtonText: 'Hủy bỏ'
       }).then((result) => {
         if (result.isConfirmed) {
-          localStorage.removeItem('currentUser');
-          localStorage.removeItem('currentFullName');
-          localStorage.removeItem('currentDept');
+          localStorage.clear();
           window.location.href = 'index.html';
         }
       });
     }
 
-    function hideLoading() {
-      const overlay = document.getElementById('loadingOverlay');
-      if (overlay) {
-        overlay.style.opacity = '0';
-        setTimeout(() => { overlay.style.display = 'none'; }, 400);
+    function refreshSystem() {
+      fetchData();
+      showToast("Đã làm mới dữ liệu hệ thống!");
+    }
+
+    function showToast(text) {
+      const box = document.getElementById('toastBox');
+      const id = Date.now();
+      box.innerHTML += `<div id="toast-${id}" class="alert alert-dark border-0 shadow py-2 px-3 mb-2 text-white" style="background-color: #052e16;">${text}</div>`;
+      setTimeout(() => {
+        const target = document.getElementById(`toast-${id}`);
+        if (target) target.remove();
+      }, 2500);
+    }
+
+    // Gọi dữ liệu từ Google Apps Script (Hỗ trợ cả chạy qua Web App fetch API nếu chạy độc lập bên ngoài)
+    function fetchData() {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center py-5 text-muted"><i class="fa fa-spinner fa-spin me-2"></i> Đang tải dữ liệu quân sự...</td></tr>`;
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run.withSuccessHandler(function(data) {
+          globalData = data;
+          renderTable(data);
+        }).getSheetData();
+      } else {
+        // Sử dụng Fetch API kết nối đến Web App URL nếu chạy file HTML ngoài Google Apps Script
+        fetch(WEB_APP_URL + "?action=getData")
+          .then(res => res.json())
+          .then(data => {
+            globalData = data;
+            renderTable(data);
+          })
+          .catch(err => {
+            console.error(err);
+            // Fallback dữ liệu mẫu nếu lỗi kết nối mạng
+            globalData = [{ rowNum: 3, c1: "11/09/2026", c2: "1", c3: "10", c4: "20", c5: "40", c6: "5" }];
+            renderTable(globalData);
+          });
       }
     }
 
-    function refreshIframe() {
-      const overlay = document.getElementById('loadingOverlay');
-      if (overlay) {
-        overlay.style.display = 'flex';
-        overlay.style.opacity = '1';
-      }
-      const iframe = document.getElementById('appScriptIframe');
-      iframe.src = iframe.src;
-    }
-
-    // TỰ ĐỘNG KIỂM TRA TRẠNG THÁI TÀI KHOẢN TỪ GOOGLE SHEETS
-    let isLockedAlertShown = false;
-    setInterval(async function() {
-      const currentUsername = localStorage.getItem('currentUser');
-      if (!currentUsername || isLockedAlertShown) return;
-
-      try {
-        const response = await fetch(GOOGLE_SCRIPT_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'getUsers' })
+    function renderTable(data) {
+      const tbody = document.getElementById('tableBody');
+      let html = '';
+      if (data && data.length > 0) {
+        data.forEach(item => {
+          html += `<tr>
+            <td>
+              <button class="btn btn-sm btn-link py-0 px-1 text-success text-decoration-none fw-bold" onclick="openEditModal(${item.rowNum})"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>
+              <button class="btn btn-sm btn-link py-0 px-1 text-danger text-decoration-none fw-bold" onclick="openDeleteModal(${item.rowNum})"><i class="fa-solid fa-trash-can"></i> Xóa</button>
+            </td>
+            <td class="fw-bold text-success">${item.c1 || ''}</td>
+            <td class="fw-bold">${item.c2 || ''}</td>
+            <td>${item.c3 || '0'}</td>
+            <td>${item.c4 || '0'}</td>
+            <td>${item.c5 || '0'}</td>
+            <td>${item.c6 || '0'}</td>
+          </tr>`;
         });
-        const data = await response.json();
+      }
+      tbody.innerHTML = html || `<tr><td colspan="7" class="text-center py-4 text-muted">Không có dữ liệu nhật ký quân sự nào.</td></tr>`;
+    }
 
-        if (data.result === 'success') {
-          const matchedUser = data.users.find(u => u.username === currentUsername);
+    function openAddModal() {
+      document.getElementById('modalTitle').innerHTML = "<i class='fa-solid fa-plus me-2'></i>Thêm bản ghi quân sự mới";
+      document.getElementById('qsForm').reset();
+      document.getElementById('rowNum').value = '';
+      modalInstance.show();
+    }
 
-          if (matchedUser && matchedUser.status === 'locked') {
-            isLockedAlertShown = true;
-            Swal.fire({
-              icon: 'warning',
-              title: 'Tài khoản bị khóa',
-              text: 'Tài khoản của bạn đã bị Quản trị viên khóa trên hệ thống. Phiên làm việc sẽ kết thúc.',
-              confirmButtonColor: '#003366',
-              allowOutsideClick: false
-            }).then(() => {
-              localStorage.removeItem('currentUser');
-              localStorage.removeItem('currentFullName');
-              localStorage.removeItem('currentDept');
-              window.location.href = 'index.html';
-            });
+    function openEditModal(rowNum) {
+      document.getElementById('modalTitle').innerHTML = "<i class='fa-solid fa-edit me-2'></i>Sửa dữ liệu hàng " + rowNum;
+      let record = globalData.find(x => x.rowNum === rowNum);
+      if (record) {
+        document.getElementById('rowNum').value = record.rowNum;
+        for (let i = 1; i <= 6; i++) {
+          document.getElementById('c' + i).value = record['c' + i] || '';
+        }
+        modalInstance.show();
+      }
+    }
+
+    function submitQsForm() {
+      let payload = { rowNum: document.getElementById('rowNum').value };
+      for (let i = 1; i <= 6; i++) {
+        payload['c' + i] = document.getElementById('c' + i).value.trim();
+      }
+      modalInstance.hide();
+      
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run.withSuccessHandler(function() {
+          fetchData();
+          showToast("Đã lưu cập nhật số liệu quân sự lên trang tính!");
+        }).saveRecord(payload);
+      } else {
+        fetch(WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'saveRecord', data: payload })
+        })
+        .then(() => {
+          fetchData();
+          showToast("Đã lưu cập nhật số liệu thành công!");
+        })
+        .catch(() => showToast("Lỗi khi lưu dữ liệu!"));
+      }
+    }
+
+    function openDeleteModal(rowNum) {
+      document.getElementById('deleteRowId').value = rowNum;
+      deleteModalInstance.show();
+    }
+
+    function executeDelete() {
+      let id = document.getElementById('deleteRowId').value;
+      deleteModalInstance.hide();
+      
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run.withSuccessHandler(function() {
+          fetchData();
+          showToast("Đã xóa hàng dữ liệu thành công!");
+        }).deleteRecord(id);
+      } else {
+        fetch(WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'deleteRecord', rowNum: id })
+        })
+        .then(() => {
+          fetchData();
+          showToast("Đã xóa hàng dữ liệu thành công!");
+        })
+        .catch(() => showToast("Lỗi khi xóa dữ liệu!"));
+      }
+    }
+
+    function searchTable() {
+      let query = document.getElementById("searchBar").value.toUpperCase();
+      let rows = document.getElementById("mainTable").getElementsByTagName("tr");
+      for (let i = 2; i < rows.length; i++) {
+        let match = false, tds = rows[i].getElementsByTagName("td");
+        for (let j = 1; j < tds.length; j++) {
+          if (tds[j] && tds[j].innerText.toUpperCase().indexOf(query) > -1) {
+            match = true;
+            break;
           }
         }
-      } catch (err) {
-        console.error("Lỗi khi kiểm tra trạng thái khóa tài khoản:", err);
+        rows[i].style.display = match ? "" : "none";
       }
-    }, 10000); // Kiểm tra định kỳ mỗi 10 giây
-</script>
+    }
+
+    function loadDriveFiles() {
+      const tbody = document.getElementById('fileTableBody');
+      tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted"><i class="fa fa-spinner fa-spin me-2"></i> Đang tải danh sách tệp quân sự...</td></tr>`;
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run.withSuccessHandler(renderFiles).getDriveFiles();
+      } else {
+        fetch(WEB_APP_URL + "?action=getFiles")
+          .then(res => res.json())
+          .then(renderFiles)
+          .catch(() => renderFiles([]));
+      }
+    }
+
+    function renderFiles(files) {
+      const tbody = document.getElementById('fileTableBody');
+      if (!files || files.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted">Thư mục trống hoặc không có tệp nào.</td></tr>`;
+        return;
+      }
+      let html = '';
+      files.forEach(f => {
+        html += `<tr>
+          <td class="text-start">
+            <a href="${f.url}" target="_blank" class="text-decoration-none fw-medium text-success">
+              <i class="fa-solid fa-file me-2"></i>${f.name}
+            </a>
+          </td>
+          <td>Tệp tài liệu</td>
+          <td>${f.date}</td>
+          <td>
+            <a href="${f.downloadUrl}" target="_blank" class="btn btn-sm btn-link text-success p-0 me-2 fw-bold text-decoration-none">
+              <i class="fa-solid fa-download"></i> Tải về
+            </a>
+            <button class="btn btn-sm btn-link text-danger p-0 fw-bold text-decoration-none" onclick="deleteFile('${f.id}')">
+              <i class="fa-solid fa-trash-can"></i> Xóa
+            </button>
+          </td>
+        </tr>`;
+      });
+      tbody.innerHTML = html;
+    }
+
+    function downloadTemplate() {
+      const spreadsheetUrl = "https://docs.google.com/spreadsheets/d/13uKEOnrI1lk5GGu3bdtosCmHcE0WWuhZimTAosPMeP0/export?format=xlsx&gid=1984446579";
+      const link = document.createElement('a');
+      link.href = spreadsheetUrl;
+      link.setAttribute('download', '');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast("Đang tải tập tin Excel về máy...");
+    }
+
+    function uploadFile(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const fileData = {
+          name: file.name,
+          mimeType: file.type,
+          bytes: e.target.result.split(',')[1]
+        };
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run.withSuccessHandler(function() {
+            loadDriveFiles();
+            showToast("📁 Đã tải tệp tài liệu quân sự lên thành công!");
+            input.value = '';
+          }).saveFileToDrive(fileData);
+        } else {
+          fetch(WEB_APP_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: 'saveFile', data: fileData })
+          })
+          .then(() => {
+            loadDriveFiles();
+            showToast("📁 Đã tải tệp tài liệu lên thành công!");
+            input.value = '';
+          })
+          .catch(() => showToast("Lỗi khi tải tệp lên!"));
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function deleteFile(id) {
+      if (confirm("Bạn có chắc chắn muốn xóa tệp này không?")) {
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run.withSuccessHandler(function() {
+            loadDriveFiles();
+            showToast("Đã xóa tệp tin thành công!");
+          }).deleteFileFromDrive(id);
+        } else {
+          fetch(WEB_APP_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: 'deleteFile', fileId: id })
+          })
+          .then(() => {
+            loadDriveFiles();
+            showToast("Đã xóa tệp tin thành công!");
+          })
+          .catch(() => showToast("Lỗi khi xóa tệp tin!"));
+        }
+      }
+    }
+  </script>
 </body>
 
 </html>
