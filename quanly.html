@@ -321,7 +321,8 @@
         .admin-label { font-size:.84rem; font-weight:700; color:#991b1b; white-space:nowrap; }
         @media (max-width: 760px) { .greeting-date { display:none; } .time-greeting { min-width:0; } }
 
-    </style>
+    .password-toggle{border:0;background:transparent;cursor:pointer;color:#64748b;padding:4px}.password-toggle:hover{color:#991b1b}
+</style>
 </head>
 <body>
 
@@ -435,6 +436,7 @@
                     <div class="card table-card">
                         <div class="table-tools">
                             <div class="table-toolbar-actions">
+<button class="btn-toolbar btn-unlock" onclick="openCreateUserModal()"><i class="fa-solid fa-user-plus"></i> Tạo tài khoản</button>
                                 <button class="btn-toolbar btn-lock" onclick="batchUpdateStatus('locked')"><i class="fa-solid fa-lock"></i> Khóa</button>
                                 <button class="btn-toolbar btn-unlock" onclick="batchUpdateStatus('active')"><i class="fa-solid fa-lock-open"></i> Mở khóa</button>
                                 <button class="btn-toolbar btn-edit-action" onclick="openEditModalSelected()"><i class="fa-solid fa-pen-to-square"></i> Sửa thông tin</button>
@@ -450,6 +452,7 @@
                                     <tr>
                                         <th style="width: 40px;"><input type="checkbox" id="selectAllCheckbox" onclick="toggleSelectAll(this)"></th>
                                         <th>Tên đăng nhập</th>
+<th>Mật khẩu</th>
                                         <th>Họ và tên</th>
                                         <th>Cơ quan / Đơn vị</th>
                                         <th>Quyền</th>
@@ -476,7 +479,21 @@
     </div>
 
 
-    <!-- MODAL PHÂN QUYỀN TÀI KHOẢN -->
+    
+<!-- MODAL TẠO TÀI KHOẢN -->
+<div class="modal-overlay" id="createUserModal"><div class="modal-card">
+<div class="modal-header"><h3>TẠO TÀI KHOẢN MỚI</h3><button class="modal-close" onclick="closeCreateUserModal()"><i class="fa-solid fa-xmark"></i></button></div>
+<div class="modal-body">
+<div class="form-group"><label>Tên đăng nhập *</label><input id="createUsername" type="text" placeholder="Nhập tên đăng nhập..."></div>
+<div class="form-group"><label>Mật khẩu *</label><input id="createPassword" type="text" placeholder="Nhập mật khẩu..."></div>
+<div class="form-group"><label>Họ và tên *</label><input id="createFullname" type="text" placeholder="Nhập họ và tên..."></div>
+<div class="form-group"><label>Cơ quan / Đơn vị</label><input id="createDepartment" type="text" placeholder="Nhập cơ quan, đơn vị..."></div>
+<div class="form-group"><label>Quyền sử dụng</label><select id="createPermission" style="width:100%;padding:9px 12px;border:1px solid var(--border-color);border-radius:8px"><option value="view">Chỉ xem</option><option value="edit">Xem & chỉnh sửa</option></select></div>
+</div>
+<div class="modal-footer"><button class="btn-toolbar" onclick="closeCreateUserModal()">Hủy</button><button class="btn-toolbar btn-unlock" onclick="createUser()"><i class="fa-solid fa-user-plus"></i> Tạo tài khoản</button></div>
+</div></div>
+
+<!-- MODAL PHÂN QUYỀN TÀI KHOẢN -->
     <div class="modal-overlay" id="permissionModal">
         <div class="modal-card">
             <div class="modal-header">
@@ -613,10 +630,23 @@
         container.innerHTML = `<img src="${imgSrc}" alt="Avatar" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
     }
 
-    // 1. TẢI DANH SÁCH TÀI KHOẢN TỪ GOOGLE SHEETS LÊN BẢNG
+    
+function togglePw(btn){const e=btn.parentElement.querySelector(".pw"),i=btn.querySelector("i");if(e.textContent==="••••••••"){e.textContent=e.dataset.pw||"(trống)";i.className="fa-solid fa-eye-slash"}else{e.textContent="••••••••";i.className="fa-solid fa-eye"}}
+function openCreateUserModal(){["createUsername","createPassword","createFullname","createDepartment"].forEach(x=>document.getElementById(x).value="");document.getElementById("createPermission").value="view";document.getElementById("createUserModal").style.display="flex"}
+function closeCreateUserModal(){document.getElementById("createUserModal").style.display="none"}
+async function createUser(){
+ const username=document.getElementById("createUsername").value.trim(),password=document.getElementById("createPassword").value,fullname=document.getElementById("createFullname").value.trim(),department=document.getElementById("createDepartment").value.trim(),permission=document.getElementById("createPermission").value;
+ if(!username||!password||!fullname){Swal.fire({icon:"warning",title:"Thiếu thông tin",text:"Tên đăng nhập, mật khẩu và họ tên không được để trống.",confirmButtonColor:"#991b1b"});return}
+ Swal.fire({title:"Đang tạo tài khoản...",allowOutsideClick:false,didOpen:()=>Swal.showLoading()});
+ try{const r=await fetch(GOOGLE_SCRIPT_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"createUser",username,password,fullname,department,permission,status:"active"})});const d=await r.json();
+ if(d.result==="success"){closeCreateUserModal();Swal.fire({icon:"success",title:"Đã tạo tài khoản",timer:1400,showConfirmButton:false});loadUsersToTable()}else Swal.fire({icon:"error",title:"Chưa tạo được",text:d.message||"Code.gs chưa xử lý action createUser."})
+ }catch(e){Swal.fire({icon:"error",title:"Lỗi kết nối",text:"Cần bổ sung action createUser trong Google Apps Script."})}
+}
+
+// 1. TẢI DANH SÁCH TÀI KHOẢN TỪ GOOGLE SHEETS LÊN BẢNG
     async function loadUsersToTable() {
         const tbody = document.querySelector("#userTable tbody");
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:20px; color: var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải danh sách tài khoản cán bộ...</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px; color: var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải danh sách tài khoản cán bộ...</td></tr>`;
 
         try {
             const res = await fetch(GOOGLE_SCRIPT_URL, {
@@ -631,7 +661,7 @@
                 tbody.innerHTML = '';
 
                 if (cachedUsers.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-muted); padding:20px;">Chưa có dữ liệu cán bộ.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--text-muted); padding:20px;">Chưa có dữ liệu cán bộ.</td></tr>`;
                     updateDashboardMetrics();
                     return;
                 }
@@ -647,6 +677,7 @@
                     tr.innerHTML = `
                         <td><input type="checkbox" class="row-checkbox" data-username="${u.username}" data-index="${index}"></td>
                         <td><strong>${u.username}</strong></td>
+<td><span class="pw" data-pw="${u.password || ''}">••••••••</span> <button class="password-toggle" onclick="togglePw(this)" title="Hiện/ẩn mật khẩu"><i class="fa-solid fa-eye"></i></button></td>
                         <td>${u.fullname}</td>
                         <td>${u.department}</td>
                         <td><span class="badge-permission ${permissionClass}">${permissionLabel}</span></td>
@@ -658,7 +689,7 @@
                 updateDashboardMetrics();
             }
         } catch (error) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--danger); padding:20px;">Lỗi kết nối tới dữ liệu Google Sheets!</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--danger); padding:20px;">Lỗi kết nối tới dữ liệu Google Sheets!</td></tr>`;
         }
     }
 
