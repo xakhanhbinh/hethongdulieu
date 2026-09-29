@@ -487,7 +487,29 @@
 <div class="form-group"><label>Tên đăng nhập *</label><input id="createUsername" type="text" placeholder="Nhập tên đăng nhập..."></div>
 <div class="form-group"><label>Mật khẩu *</label><input id="createPassword" type="text" placeholder="Nhập mật khẩu..."></div>
 <div class="form-group"><label>Họ và tên *</label><input id="createFullname" type="text" placeholder="Nhập họ và tên..."></div>
-<div class="form-group"><label>Cơ quan / Đơn vị</label><input id="createDepartment" type="text" placeholder="Nhập cơ quan, đơn vị..."></div>
+<div class="form-group">
+<label>Cơ quan / Đơn vị *</label>
+<select id="createDepartment" style="width:100%;padding:9px 12px;border:1px solid var(--border-color);border-radius:8px;background:#fff;font-size:.875rem;">
+<option value="">-- Chọn ngành / bộ phận --</option>
+<option>Ủy ban Kiểm tra</option>
+<option>Ban Xây dựng Đảng</option>
+<option>Ban MTTQVN - Mặt trận Tổ quốc</option>
+<option>Phòng Kinh tế - Hạ tầng</option>
+<option>Văn hóa - Xã hội</option>
+<option>Trung tâm PVHCC</option>
+<option>Trung tâm Công ích</option>
+<option>Công an</option>
+<option>Quân sự</option>
+<option>Hội Người cao tuổi</option>
+<option>Hội Nông dân</option>
+<option>Hội Liên hiệp Phụ nữ</option>
+<option>Hội Cựu chiến binh</option>
+<option>Đoàn Thanh niên</option>
+<option>Hội Chữ thập đỏ - Đông y</option>
+<option>Hội Khuyến học</option>
+<option>Hội Nạn nhân CĐDC</option>
+</select>
+</div>
 <div class="form-group"><label>Quyền sử dụng</label><select id="createPermission" style="width:100%;padding:9px 12px;border:1px solid var(--border-color);border-radius:8px"><option value="view">Chỉ xem</option><option value="edit">Xem & chỉnh sửa</option></select></div>
 </div>
 <div class="modal-footer"><button class="btn-toolbar" onclick="closeCreateUserModal()">Hủy</button><button class="btn-toolbar btn-unlock" onclick="createUser()"><i class="fa-solid fa-user-plus"></i> Tạo tài khoản</button></div>
@@ -632,11 +654,11 @@
 
     
 function togglePw(btn){const e=btn.parentElement.querySelector(".pw"),i=btn.querySelector("i");if(e.textContent==="••••••••"){e.textContent=e.dataset.pw||"(trống)";i.className="fa-solid fa-eye-slash"}else{e.textContent="••••••••";i.className="fa-solid fa-eye"}}
-function openCreateUserModal(){["createUsername","createPassword","createFullname","createDepartment"].forEach(x=>document.getElementById(x).value="");document.getElementById("createPermission").value="view";document.getElementById("createUserModal").style.display="flex"}
+function openCreateUserModal(){["createUsername","createPassword","createFullname"].forEach(x=>document.getElementById(x).value="");document.getElementById("createDepartment").value="";document.getElementById("createPermission").value="view";document.getElementById("createUserModal").style.display="flex"}
 function closeCreateUserModal(){document.getElementById("createUserModal").style.display="none"}
 async function createUser(){
  const username=document.getElementById("createUsername").value.trim(),password=document.getElementById("createPassword").value,fullname=document.getElementById("createFullname").value.trim(),department=document.getElementById("createDepartment").value.trim(),permission=document.getElementById("createPermission").value;
- if(!username||!password||!fullname){Swal.fire({icon:"warning",title:"Thiếu thông tin",text:"Tên đăng nhập, mật khẩu và họ tên không được để trống.",confirmButtonColor:"#991b1b"});return}
+ if(!username||!password||!fullname||!department){Swal.fire({icon:"warning",title:"Thiếu thông tin",text:"Tên đăng nhập, mật khẩu, họ tên và cơ quan/đơn vị không được để trống.",confirmButtonColor:"#991b1b"});return}
  Swal.fire({title:"Đang tạo tài khoản...",allowOutsideClick:false,didOpen:()=>Swal.showLoading()});
  try{const r=await fetch(GOOGLE_SCRIPT_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"createUser",username,password,fullname,department,permission,status:"active"})});const d=await r.json();
  if(d.result==="success"){closeCreateUserModal();Swal.fire({icon:"success",title:"Đã tạo tài khoản",timer:1400,showConfirmButton:false});loadUsersToTable()}else Swal.fire({icon:"error",title:"Chưa tạo được",text:d.message||"Code.gs chưa xử lý action createUser."})
