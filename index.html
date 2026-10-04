@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - Quản lý Dữ liệu Báo cáo Xã Khánh Bình</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --primary-color: #d90429;        
+            --primary-hover: #b91c1c;       
+            --accent-yellow: #f59e0b;       
+            --accent-yellow-light: #fef3c7; 
+            --bg-gradient: linear-gradient(135deg, #991b1b 0%, #b91c1c 100%);
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --radius: 10px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 440px;
+            padding: 40px 35px;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+            position: relative;
+            border-top: 5px solid var(--accent-yellow);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header img.emblem {
+            width: 80px;
+            height: auto;
+            margin-bottom: 12px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .header h2 {
+            color: #991b1b;
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 6px;
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            line-height: 1.4;
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="password"],
+        .form-group select {
+            width: 100%;
+            padding: 13px 16px;
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--radius);
+            font-size: 14px;
+            color: var(--text-main);
+            transition: all 0.25s ease;
+            outline: none;
+            background-color: #f8fafc;
+        }
+
+        .login-pass-wrapper input {
+            padding-right: 50px !important;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary-color);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(217, 4, 41, 0.1);
+        }
+
+        .action-group {
+            position: absolute;
+            right: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-eye {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+
+        .btn-eye:hover {
+            color: var(--primary-color);
+        }
+
+        .btn-eye svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .button-group-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(217, 4, 41, 0.25);
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-register-open {
+            width: 100%;
+            padding: 12px;
+            background-color: #ffffff;
+            color: var(--primary-color);
+            border: 1.5px dashed var(--primary-color);
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-register-open:hover {
+            background-color: #fef2f2;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            border-top: 1px solid #e2e8f0;
+            padding-top: 16px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            width: 100%;
+            max-width: 480px;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            max-height: 90vh;
+            overflow-y: auto;
+            border-top: 5px solid var(--accent-yellow);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: var(--primary-color);
+            font-size: 17px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 26px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+
+        .close-modal:hover {
+            color: var(--primary-color);
+        }
+
+        .btn-modal-submit {
+            width: 100%;
+            padding: 13px;
+            background-color: var(--accent-yellow);
+            color: #78350f;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.2s;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-modal-submit:hover {
+            background-color: #d97706;
+            color: #ffffff;
+        }
+
+        .success-modal {
+            text-align: center;
+            padding: 30px 25px;
+        }
+
+        .success-icon-wrapper {
+            width: 70px;
+            height: 70px;
+            background-color: var(--accent-yellow-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+
+        .success-icon-wrapper svg {
+            width: 40px;
+            height: 40px;
+            fill: #d97706;
+        }
+
+        .success-modal h3 {
+            color: var(--primary-color);
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .user-info-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius);
+            padding: 15px;
+            margin: 16px 0 24px;
+            text-align: left;
+        }
+
+        .user-info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .user-info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .user-info-label {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .user-info-val {
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .btn-go-admin {
+            width: 100%;
+            padding: 13px;
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-go-admin:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .swal2-popup {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            border-radius: 16px !important;
+        }
+      .data-loading { height: 110px; padding: 28px !important; text-align: center; vertical-align: middle; background: #f8fafc; color: #64748b; font-size: 14px; font-weight: 500; border: 0 !important; }
+  </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="header">
+            <img src="Quoc_huy.png" alt="Quốc huy Việt Nam" class="emblem">
+            <h2>XÃ KHÁNH BÌNH</h2>
+            <h1>Quản lý Dữ liệu Báo cáo</h1>
+        </div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="username">Tên đăng nhập</label>
+                <div class="input-wrapper">
+                    <input type="text" id="username" placeholder="Nhập tên đăng nhập" required autocomplete="username">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Mật khẩu</label>
+                <div class="input-wrapper login-pass-wrapper">
+                    <input type="password" id="password" placeholder="Nhập mật khẩu" required autocomplete="current-password">
+                    <div class="action-group">
+                        <button type="button" class="btn-eye" onclick="togglePass('password', this)" title="Ẩn/Hiện mật khẩu">
+                            <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group-stack">
+                <button type="submit" class="btn-submit">ĐĂNG NHẬP</button>
+                <button type="button" class="btn-register-open" id="openRegisterBtn">+ TẠO TÀI KHOẢN CÁN BỘ MỚI</button>
+            </div>
+        </form>
+
+        <div class="footer">
+            <p>Hệ thống thông tin báo cáo nội bộ - Xã Khánh Bình</p>
+        </div>
+    </div>
+
+    <!-- Modal Đăng ký -->
+    <div class="modal-overlay" id="registerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Tạo tài khoản Cán bộ mới</h3>
+                <button type="button" class="close-modal" id="closeRegisterBtn">&times;</button>
+            </div>
+
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label for="reg-fullname">Họ và tên Cán bộ</label>
+                    <input type="text" id="reg-fullname" placeholder="Ví dụ: Nguyễn Văn A" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-username">Tên đăng nhập</label>
+                    <input type="text" id="reg-username" placeholder="Ví dụ: cb_nguyenvana" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-password">Mật khẩu khởi tạo</label>
+                    <div class="input-wrapper login-pass-wrapper">
+                        <input type="password" id="reg-password" placeholder="Tối thiểu 6 ký tự" required minlength="6">
+                        <div class="action-group">
+                            <button type="button" class="btn-eye" onclick="togglePass('reg-password', this)">
+                                <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-department">Ngành / Lĩnh vực chuyên trách</label>
+                    <select id="reg-department" required>
+                        <option value="" disabled selected>-- Chọn ngành / bộ phận --</option>
+                        <option value="Ủy Ban kiểm tra">Ủy Ban kiểm tra</option>
+                        <option value="Ban Xây dựng Đảng">Ban Xây dựng Đảng</option>
+                        <option value="Ban MTVN - Mặt trận Tổ quốc">Ban MTVN - Mặt trận Tổ quốc</option>
+                        <option value="Phòng Kinh tế - Hạ tầng">Phòng Kinh tế - Hạ tầng</option>
+                        <option value="Văn hóa - Xã hội">Văn hóa - Xã hội</option>
+                        <option value="Trung tâm PVHCC">Trung tâm PVHCC</option>
+                        <option value="Trung tâm công ích">Trung tâm công ích</option>
+                        <option value="Công an">Công an</option>
+                        <option value="Quân sự">Quân sự</option>
+                        <option value="Hội người cao tuổi">Hội người cao tuổi</option>
+                        <option value="Hội nông dân">Hội nông dân</option>
+                        <option value="Hội Liên hiệp Phụ nữ">Hội Liên hiệp Phụ nữ</option>
+                        <option value="Hội Cựu chiến binh">Hội Cựu chiến binh</option>
+                        <option value="Đoàn thanh niên">Đoàn thanh niên</option>
+                        <option value="Hội Chữ thập đỏ - Đông y">Hội Chữ thập đỏ - Đông y</option>
+                        <option value="Hội Khuyến học">Hội Khuyến học</option>
+                        <option value="Hội Nạn nhân CĐDC">Hội Nạn nhân CĐDC</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-modal-submit">XÁC NHẬN TẠO TÀI KHOẢN</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Thành công -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-content success-modal">
+            <div class="success-icon-wrapper">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+            </div>
+            <h3>Đăng nhập thành công!</h3>
+            
+            <div class="user-info-box">
+                <div class="user-info-item">
+                    <span class="user-info-label">Tài khoản:</span>
+                    <span class="user-info-val" id="displayUsername">---</span>
+                </div>
+                <div class="user-info-item">
+                    <span class="user-info-label">Cán bộ / Ngành:</span>
+                    <span class="user-info-val" id="displayRole">---</span>
+                </div>
+            </div>
+
+            <button type="button" class="btn-go-admin" id="btnRedirect" onclick="redirectToAdmin()">CHUYỂN SANG TRANG NGÀNH &rarr;</button>
+        </div>
+    </div>
+
+<script>
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxX8BXmNYxudSdGuB0kbqSkSSsCPfJm325GkTMpBHFWD8iT9GFCpNCff943vjuTSK1s/exec";
+
+    // Bảng ánh xạ bộ phận với các biến thể tên gọi để đảm bảo luôn chuyển đúng trang ubkt.html
+    const DEPARTMENT_MAP = {
+        'Ủy Ban kiểm tra': 'ubkt.html',
+        'Ban Xây dựng Đảng': 'xaydungdang.html',
+        'Phòng Kinh tế - Hạ tầng': 'phongkinhte.html',
+        'Văn hóa - Xã hội': 'phongvanhoa.html',
+        'Quân sự': 'quansu.html',
+        'Công an': 'congan.html',
+        'Trung tâm PVHCC': 'hcc.html',
+        'Trung tâm công ích': 'congich.html',
+        'Ban MTVN - Mặt trận Tổ quốc': 'mttq.html',
+        'Hội nông dân': 'nongdan.html',
+        'Hội Liên hiệp Phụ nữ': 'phunu.html',
+        'Hội Cựu chiến binh': 'cuuchienbinh.html',
+        'Đoàn thanh niên': 'doanthanhnien.html',
+        'Hội người cao tuổi': 'nguoicaotuoi.html',
+        'Hội Chữ thập đỏ - Đông y': 'chuthapdo.html',
+        'Hội Khuyến học': 'khuyenhoc.html',
+        'Hội Nạn nhân CĐDC': 'nanhan_cddc.html'
+    };
+
+    const regModal = document.getElementById('registerModal');
+    document.getElementById('openRegisterBtn').addEventListener('click', () => regModal.classList.add('active'));
+    document.getElementById('closeRegisterBtn').addEventListener('click', () => regModal.classList.remove('active'));
+
+    window.addEventListener('click', (e) => {
+        if (e.target === regModal) regModal.classList.remove('active');
+    });
+
+    async function handleRegister(e) {
+        e.preventDefault();
+        const regName = document.getElementById('reg-fullname').value.trim();
+        const regUser = document.getElementById('reg-username').value.trim();
+        const regPass = document.getElementById('reg-password').value;
+        const regDept = document.getElementById('reg-department').value;
+
+        Swal.fire({
+            title: 'Đang xử lý...',
+            text: 'Vui lòng chờ trong giây lát',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        try {
+            const response = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({
+                    action: 'addUser',
+                    fullname: regName,
+                    username: regUser,
+                    password: regPass,
+                    department: regDept,
+                    permission: 'view'
+                })
+            });
+
+            const resData = await response.json();
+
+            if (resData.result === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Tạo tài khoản thành công',
+                    text: `Đã đăng ký tài khoản thành công cho Cán bộ: ${regName}`,
+                    confirmButtonColor: '#d90429'
+                });
+
+                document.getElementById('username').value = regUser;
+                document.getElementById('password').value = regPass;
+                regModal.classList.remove('active');
+                document.getElementById('registerForm').reset();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Đăng ký thất bại',
+                    text: resData.message,
+                    confirmButtonColor: '#d90429'
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi kết nối',
+                text: 'Không thể kết nối với hệ thống hệ thống dữ liệu!',
+                confirmButtonColor: '#d90429'
+            });
+        }
+    }
+
+    let targetRedirectUrl = 'admin.html';
+
+    async function handleLogin(e) {
+        e.preventDefault();
+        const uInput = document.getElementById('username').value.trim();
+        const pInput = document.getElementById('password').value;
+
+        let currentFullname = '';
+        let currentDept = '';
+
+        if (uInput === 'xakhanhbinh' && pInput === 'xakhanhbinh123') {
+            currentFullname = 'Xã Khánh Bình';
+            currentDept = 'Cấp Quản lý';
+            sessionStorage.setItem('currentPermission', 'edit');
+            sessionStorage.setItem('viewPermission', 'true');
+            sessionStorage.setItem('currentStatus', 'active');
+            targetRedirectUrl = 'quanly.html';
+            document.getElementById('btnRedirect').innerText = "CHUYỂN SANG TRANG QUẢN LÝ →";
+        } 
+        else if (uInput === 'admin' && pInput === 'admin@123') {
+            currentFullname = 'Quản trị viên Hệ thống';
+            currentDept = 'Ban Quản trị';
+            sessionStorage.setItem('currentPermission', 'edit');
+            sessionStorage.setItem('viewPermission', 'true');
+            sessionStorage.setItem('currentStatus', 'active');
+            targetRedirectUrl = 'admin.html'; 
+            document.getElementById('btnRedirect').innerText = "CHUYỂN SANG TRANG QUẢN TRỊ ADMIN →";
+        } 
+        else {
+            Swal.fire({
+                title: 'Đang xác thực...',
+                text: 'Vui lòng chờ...',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'login',
+                        username: uInput,
+                        password: pInput
+                    })
+                });
+
+                const resData = await response.json();
+
+                if (resData.result === 'success') {
+                    const user = resData.user || {};
+                    currentFullname = user.fullname || '';
+                    currentDept = user.department || user.dept || '';
+
+                    const currentPermission = user.permission || 'view';
+                    sessionStorage.setItem('currentPermission', currentPermission);
+                    sessionStorage.setItem('viewPermission', currentPermission === 'edit' ? 'true' : 'false');
+                    sessionStorage.setItem('currentStatus', user.status || 'active');
+                    if(user.viewerToken)sessionStorage.setItem('viewerToken',user.viewerToken);else sessionStorage.removeItem('viewerToken');
+
+                    // Lấy đường dẫn dựa trên DEPARTMENT_MAP, mặc định fallback về admin.html nếu không khớp
+                    const allowedRoutes = ["ubkt.html", "xaydungdang.html", "mttq.html", "phongkinhte.html", "phongvanhoa.html", "pvhcc.html", "congich.html", "congan.html", "quansu.html", "nguoicaotuoi.html", "nongdan.html", "phunu.html", "cuuchienbinh.html", "doanthanhnien.html", "chuthapdo.html", "khuyenhoc.html", "nannhan_cddc.html", "quanly.html", "xem17.html"];
+                    const referenceUrl = user.redirectUrl || user.html || resData.redirectUrl || resData.html || '';
+                    const normalizeDept = value=>String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/gi,'d').toLowerCase().replace(/[^a-z0-9]/g,'');
+                    const routes = [{"html": "ubkt.html", "department": "Ủy Ban kiểm tra", "aliases": ["Ban Kiểm tra", "Ủy ban kiểm tra Đảng ủy", "ubkt"]}, {"html": "xaydungdang.html", "department": "Ban Xây dựng Đảng", "aliases": []}, {"html": "mttq.html", "department": "Ban MTVN - Mặt trận Tổ quốc", "aliases": ["Ban MTTQVN", "Ban MTTQVN xã", "Ủy ban MTTQ Việt Nam xã", "Mặt trận Tổ quốc", "MTTQ"]}, {"html": "phongkinhte.html", "department": "Phòng Kinh tế - Hạ tầng", "aliases": ["Phòng Kinh tế", "Kinh tế"]}, {"html": "phongvanhoa.html", "department": "Văn hóa - Xã hội", "aliases": ["Phòng Văn hóa", "Văn hóa"]}, {"html": "pvhcc.html", "department": "Trung tâm PVHCC", "aliases": ["Trung tâm phục vụ hành chính công", "TT Hành chính công"]}, {"html": "congich.html", "department": "Trung tâm công ích", "aliases": []}, {"html": "congan.html", "department": "Công an", "aliases": ["Công an xã"]}, {"html": "quansu.html", "department": "Quân sự", "aliases": ["Ban Chỉ huy Quân sự xã"]}, {"html": "nguoicaotuoi.html", "department": "Hội người cao tuổi", "aliases": []}, {"html": "nongdan.html", "department": "Hội nông dân", "aliases": []}, {"html": "phunu.html", "department": "Hội Liên hiệp Phụ nữ", "aliases": ["Hội Phụ nữ"]}, {"html": "cuuchienbinh.html", "department": "Hội Cựu chiến binh", "aliases": []}, {"html": "doanthanhnien.html", "department": "Đoàn thanh niên", "aliases": []}, {"html": "chuthapdo.html", "department": "Hội Chữ thập đỏ - Đông y", "aliases": ["Hội Chữ thập đỏ"]}, {"html": "khuyenhoc.html", "department": "Hội Khuyến học", "aliases": []}, {"html": "nannhan_cddc.html", "department": "Hội Nạn nhân CĐDC", "aliases": ["Hội Nạn nhân CĐĐC", "Hội Nạn nhân chất độc da cam"]}];
+                    const match = routes.find(route=>[route.department,...route.aliases].some(label=>normalizeDept(currentDept)===normalizeDept(label) || normalizeDept(currentDept)===normalizeDept(label+' xã Khánh Bình')));
+                    targetRedirectUrl = allowedRoutes.includes(referenceUrl) ? referenceUrl : (match ? match.html : DEPARTMENT_MAP[currentDept]);
+                    if(!allowedRoutes.includes(targetRedirectUrl)) {
+                      Swal.fire({icon:'error',title:'Chưa xác định được ngành',text:'Kiểm tra cột Ngành trong Users.'});return;
+                    }
+                    document.getElementById('btnRedirect').innerText = "CHUYỂN SANG TRANG NGÀNH →";
+                    Swal.close();
+                    if (resData.loginHistorySaved !== true) {
+                        await Swal.fire({icon:'warning',title:'Đăng nhập thành công',confirmButtonColor:'#d90429'});
+                    }
+                } else if (resData.result === 'locked') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Tài khoản đã bị khóa',
+                        text: resData.message || 'Vui lòng liên hệ quản trị hệ thống.',
+                        confirmButtonColor: '#d90429'
+                    });
+                    return;
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Đăng nhập thất bại',
+                        text: resData.message,
+                        confirmButtonColor: '#d90429'
+                    });
+                    return;
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi hệ thống',
+                    text: 'Không thể xác thực thông tin tài khoản!',
+                    confirmButtonColor: '#d90429'
+                });
+                return;
+            }
+        }
+
+        sessionStorage.setItem('currentUser', uInput);
+        sessionStorage.setItem('currentFullName', currentFullname);
+        sessionStorage.setItem('currentDept', currentDept);
+
+        document.getElementById('displayUsername').innerText = uInput;
+        document.getElementById('displayRole').innerText = `${currentFullname} (${currentDept})`;
+        document.getElementById('successModal').classList.add('active');
+    }
+
+    function redirectToAdmin() {
+        window.location.href = targetRedirectUrl;
+    }
+
+    function togglePass(inputId, btn) {
+        const input = document.getElementById(inputId);
+        input.type = input.type === 'password' ? 'text' : 'password';
+    }
+</script>
+</body>
+</html>
