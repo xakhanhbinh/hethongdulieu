@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hội Cựu chiến binh - Xã Khánh Bình</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Tích hợp SweetAlert2 cho thông báo -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    :root {
+      --primary-color: #880e4f;        
+      --primary-hover: #560027;        
+      --accent-gold: #c5a059;          
+      --bg-color: #f4f6f8;             
+      --card-bg: #ffffff;              
+      --text-color: #2c3e50;           
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding-bottom: 30px;
+    }
+
+    .app-header {
+      background: linear-gradient(135deg, #880e4f 0%, #b71c1c 100%);
+      color: #fff;
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+      border-bottom: 3px solid var(--accent-gold);
+    }
+
+    .app-title {
+      font-weight: 700;
+      font-size: 1.15rem;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-logo {
+      height: 42px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.2));
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .badge-status {
+      background-color: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      font-weight: 500;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-status::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background-color: #4caf50;
+      border-radius: 50%;
+    }
+
+    .user-profile-container {
+      position: relative;
+    }
+
+    .btn-user-profile {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 4px 12px 4px 6px;
+      border-radius: 30px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #ffffff;
+      transition: all 0.25s ease;
+    }
+
+    .btn-user-profile:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      background: var(--accent-gold);
+      color: #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-name-text {
+      font-size: 13px;
+      font-weight: 600;
+      max-width: 140px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .profile-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      width: 270px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      border: 1px solid #e2e8f0;
+      padding: 16px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 1050;
+      color: #2c3e50;
+    }
+
+    .profile-dropdown.active {
+      display: flex;
+    }
+
+    .dropdown-header {
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 10px;
+    }
+
+    .dropdown-user-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
+    .dropdown-user-dept {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .dropdown-info-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    .dropdown-info-val {
+      color: #334155;
+      font-weight: 600;
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background-color: #f1f5f9;
+      margin: 4px 0;
+    }
+
+    .mode-select-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+      color: #475569;
+      background-color: #f8fafc;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .btn-logout-menu {
+      width: 100%;
+      padding: 8px;
+      background-color: #ef4444;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .btn-logout-menu:hover {
+      background-color: #dc2626;
+    }
+
+    .main-container {
+      max-width: 100%;
+      padding: 0 20px;
+      margin-top: 20px;
+    }
+
+    .custom-card {
+      background: var(--card-bg);
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      padding: 15px 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    }
+
+    .nav-pills .nav-link {
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+      background-color: #fff;
+      font-weight: 600;
+      border-radius: 6px;
+      padding: 8px 18px;
+      margin-right: 10px;
+      transition: all 0.2s;
+    }
+
+    .nav-pills .nav-link.active {
+      background-color: var(--primary-color);
+      color: #fff;
+    }
+
+    .btn-custom-primary {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      font-weight: 500;
+    }
+    .btn-custom-primary:hover {
+      background-color: var(--primary-hover);
+      color: white;
+    }
+
+    .btn-custom-success {
+      background-color: #2e7d32;
+      color: white;
+      border: none;
+      font-weight: 500;
+    }
+    .btn-custom-success:hover {
+      background-color: #1b5e20;
+      color: white;
+    }
+
+    .btn-custom-outline {
+      border: 1px solid #cbd5e1;
+      background-color: #fff;
+      color: #334155;
+      font-weight: 500;
+    }
+    .btn-custom-outline:hover {
+      background-color: #f1f5f9;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      max-height: 65vh;
+    }
+
+    .custom-table {
+      width: 100%;
+      margin-bottom: 0;
+      white-space: nowrap;
+    }
+
+    .custom-table th {
+      background-color: #f8fafc;
+      color: var(--primary-color);
+      font-weight: 700;
+      font-size: 0.82rem;
+      border: 1px solid #cbd5e1;
+      padding: 10px 8px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .custom-table td {
+      vertical-align: middle;
+      font-size: 0.86rem;
+      padding: 8px 10px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .search-input {
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      padding-left: 38px;
+    }
+
+    .search-wrapper {
+      position: relative;
+    }
+
+    .search-wrapper i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+    }
+
+    .modal-group-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      background-color: #fdf2f8;
+      padding: 8px 12px;
+      border-left: 4px solid var(--primary-color);
+      border-radius: 0 4px 4px 0;
+      margin-top: 10px;
+      margin-bottom: 12px;
+    }
+
+    .form-group-card {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 15px;
+    }
+
+    .form-label {
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 4px;
+    }
+
+    .iframe-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    .iframe-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: calc(100% + 45px);
+      border: none;
+    }
+
+    /* Bảng gọn và dễ theo dõi khi cuộn. */
+    #tableHeaderBlock th { background: #e5e7eb !important; color: #000 !important; padding: 9px 10px; vertical-align: middle; }
+    #tableBody td { padding: 7px 9px; font-size: 13px; vertical-align: middle; }
+    #tableBody tr:nth-child(even) { background: #f8fafc; }
+    #tableBody tr:hover { background: #edf2f7; }
+    #tableBody .btn { padding: 3px 6px; }
+    .data-pager { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 10px 0; font-size: 13px; color: #334155; }
+    .data-pager .form-select { width: 105px; margin-left: auto; }
+    #tableHeaderBlock th { white-space: normal !important; text-overflow: clip !important; overflow: visible !important; min-width: 115px; max-width: none; }
+    #formFields .form-label { white-space: normal; font-size: 13px; color: #111; }
+
+    #formFields .entry-group { border: 1px solid #d1d5db; border-radius: 10px; padding: 16px; margin: 0 0 16px; background: #fff; min-width: 0; }
+    #formFields .entry-group legend { float: none; width: auto; max-width: 100%; font-size: 14px; font-weight: 600; color: #111; background: #e5e7eb; border-radius: 7px; padding: 7px 10px; margin: 0 0 8px; }
+    .entry-group-number { display: inline-block; margin-right: 8px; color: #475569; }
+    #recordModal .modal-body { background: #f8fafc; }
+    #formFields input[readonly] { background: #f1f5f9; color: #475569; }
+    .data-loading { height: 110px; padding: 28px !important; text-align: center; vertical-align: middle; background: #f8fafc; color: #64748b; font-size: 14px; font-weight: 500; border: 0 !important; }
+
+    .department-mark { display: inline-flex; flex: 0 0 42px; width: 42px; height: 42px; align-items: center; justify-content: center; color: #ffe08a; background: rgba(255,255,255,.12); border: 1px solid rgba(255,224,138,.55); border-radius: 12px; font-size: 22px; }
+    .app-title { flex: 1; min-width: 0; }
+    .app-title > .department-title { white-space: normal; line-height: 1.4; }
+    .app-header { gap: 18px; }
+    .header-actions { flex-shrink: 0; }
+    @media (max-width: 768px) { .app-header { padding: 10px 12px; flex-wrap: wrap; } .app-title { font-size: 14px; flex-basis: 100%; } .header-actions { margin-left: auto; } }
+  </style>
+<style>body.ubkt-access-pending > *:not(script):not(.swal2-container){visibility:hidden}</style>
+</head>
+<body class="ubkt-access-pending">
+
+  <header class="app-header">
+    <div class="app-title">
+      <span class="department-mark" role="img" aria-label="Biểu tượng Hội Cựu chiến binh"><i class="fa-solid fa-medal" aria-hidden="true"></i></span>
+      <span class="department-title">DỮ LIỆU THUỘC CHỨC NĂNG CỦA HỘI CỰU CHIẾN BINH - XÃ KHÁNH BÌNH</span>
+    </div>
+
+    <div class="header-actions">
+      <span class="badge-status d-none d-md-inline-flex">Trực tuyến</span>
+
+      <!-- Khu vực tài khoản liên kết người dùng -->
+      <div class="user-profile-container">
+        <button class="btn-user-profile" id="userProfileBtn" onclick="toggleProfileDropdown(event)">
+          <div class="avatar" id="avatarText">CB</div>
+          <span class="user-name-text" id="headerFullName">Cán bộ</span>
+          <span style="font-size: 9px;">▼</span>
+        </button>
+
+        <!-- Menu thả xuống tích hợp hiển thị phân quyền tự động -->
+        <div class="profile-dropdown" id="profileDropdown">
+          <div class="dropdown-header">
+            <div class="dropdown-user-name" id="dropdownFullName">Cán bộ Phụ trách</div>
+            <div class="dropdown-user-dept" id="dropdownDept">Hội Cựu chiến binh</div>
+          </div>
+          <div class="dropdown-info-item">
+            <span>Tài khoản:</span>
+            <span class="dropdown-info-val" id="dropdownUsername">...</span>
+          </div>
+          <div class="dropdown-info-item">
+            <span>Trạng thái:</span>
+            <span class="dropdown-info-val" style="color: #16a34a;" id="accountStatusText">● Hoạt động</span>
+          </div>
+
+          <div class="dropdown-divider"></div>
+
+          <!-- Hiển thị phân quyền tự động theo tài khoản (Không cần lựa chọn thủ công) -->
+          <div class="mode-select-container">
+            <span><i class="fa-solid fa-shield-halved me-1 text-primary"></i> Quyền thao tác:</span>
+            <span id="userRoleBadge" class="badge bg-secondary px-2 py-1">Đang đối chiếu...</span>
+          </div>
+
+          <div class="dropdown-divider"></div>
+
+          <button type="button" class="btn-logout-menu" onclick="handleLogout()">🚪 ĐĂNG XUẤT</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-container">
+    
+    <div class="custom-card">
+      <ul class="nav nav-pills justify-content-between align-items-center" id="mainTabs" role="tablist">
+        <div class="d-flex">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="input-tab" data-bs-toggle="pill" data-bs-target="#input-pane" type="button">
+              <i class="fa-solid fa-keyboard me-2"></i>Bảng Dữ Liệu 
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="storage-tab" data-bs-toggle="pill" data-bs-target="#storage-pane" type="button" onclick="loadDriveFiles()">
+              <i class="fa-solid fa-folder me-2"></i>Kho lưu trữ văn bản 
+            </button>
+          </li>
+        </div>
+      </ul>
+    </div>
+
+    <div class="tab-content" id="mainTabsContent">
+      
+      <div class="tab-pane fade show active" id="input-pane" role="tabpanel">
+        
+        <div class="custom-card">
+          <div class="row g-3 align-items-center">
+            <div class="col-md-3">
+              <div class="search-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" class="form-control search-input" placeholder="Tra cứu nhanh dữ liệu..." oninput="scheduleFilter()">
+              </div>
+            </div>
+            <div class="col-md-9 text-end">
+              <button class="btn btn-custom-success me-2" id="btnDirectSheetEditor" style="display:none" onclick="openGoogleSheetModal()">
+                <i class="fa-solid fa-pen-to-square me-1"></i> Trình Chỉnh Sửa Trực Tiếp
+              </button>
+              <button class="btn btn-custom-outline me-2" onclick="downloadExcelFromSheet()">
+                <i class="fa-solid fa-file-excel me-1" style="color: #2e7d32;"></i> Tải danh sách
+              </button>
+              <button class="btn btn-custom-outline me-2" onclick="loadSheetData()">
+                <i class="fa-solid fa-rotate me-1"></i> Làm mới dữ liệu
+              </button>
+              <!-- Nút thêm dữ liệu sẽ tự động ẩn/hiện theo quyền View/Edit từ CSDL -->
+              <button class="btn btn-custom-primary" id="btnAddRecord" onclick="openModal()">
+                <i class="fa-solid fa-plus me-1"></i> Nhập dữ liệu
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="custom-card">
+          <div class="table-container">
+            <table class="table table-bordered table-hover custom-table">
+              <thead id="tableHeaderBlock"></thead>
+              <tbody id="tableBody">
+                <tr>
+                  <td class="data-loading" role="status">Đang tải dữ liệu</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="tab-pane fade" id="storage-pane" role="tabpanel">
+        <div class="custom-card">
+          <div class="d-flex gap-2">
+            <button class="btn btn-custom-primary" id="btnUploadFile" onclick="document.getElementById('fileInput').click()">
+              <i class="fa-solid fa-cloud-arrow-up me-1"></i> Tải lên tệp tin
+            </button>
+            <input type="file" id="fileInput" class="d-none" multiple onchange="uploadSelectedFile(this)">
+            <button class="btn btn-custom-outline" onclick="loadDriveFiles()">
+              <i class="fa-solid fa-rotate me-1"></i> Làm mới danh sách
+            </button>
+          </div>
+        </div>
+
+        <div class="custom-card d-none" id="uploadQueuePanel">
+          <div class="d-flex flex-wrap justify-content-between gap-2 mb-2">
+            <strong>Tệp đã chọn</strong><span class="text-muted small">Tối đa 10 MB mỗi tệp</span>
+          </div>
+          <div id="uploadQueueList" aria-live="polite"></div>
+          <div class="d-flex flex-wrap gap-2 align-items-center mt-3">
+            <button id="btnStartUpload" class="btn btn-custom-primary" onclick="startUploadQueue()"><i class="fa-solid fa-cloud-arrow-up me-1"></i>Tải lên các tệp</button>
+            <button id="btnClearUpload" class="btn btn-custom-outline" onclick="clearUploadQueue()">Bỏ danh sách</button>
+            <span id="uploadSummary" class="small text-muted" role="status"></span>
+          </div>
+        </div>
+
+        <div class="custom-card">
+          <div class="fw-bold mb-3" style="color: var(--primary-color);"><i class="fa-solid fa-folder-open me-2"></i>Danh sách tệp tin kiểm tra, giám sát</div>
+          <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Tên tệp tin</th>
+                  <th style="width: 150px;">Loại tệp</th>
+                  <th style="width: 200px;">Ngày tạo</th>
+                  <th style="width: 160px;" class="text-center">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="fileListBody">
+                <tr>
+                  <td colspan="4" class="text-center py-4 text-muted">Thư mục trống hoặc chưa có tệp nào.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="modal fade" id="recordModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header text-white" style="background-color: var(--primary-color) !important;">
+          <h5 class="modal-title font-weight-bold" id="modalTitle"><i class="fa-solid fa-pen-to-square me-2"></i>Thêm số liệu Hội Cựu chiến binh</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form id="recordForm">
+            <input type="hidden" id="rowNum">
+            <div id="formFields"></div>
+          </form>
+        </div>
+        <div class="modal-footer bg-light" id="modalFooter">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-custom-primary" id="btnSaveRecord" onclick="saveData()">Lưu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="sheetModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header text-white" style="background-color: var(--primary-color) !important;">
+          <h5 class="modal-title font-weight-bold"><i class="fa-solid fa-pen-to-square me-2"></i>Trình Chỉnh Sửa Trực Tiếp Dữ Liệu</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" onclick="loadSheetData()"></button>
+        </div>
+        <div class="modal-body p-0">
+          <div class="iframe-wrapper">
+            <iframe id="sheetIframe" src=""></iframe>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="loadSheetData()">Đóng và cập nhật dữ liệu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title fs-6 font-weight-bold"><i class="fa-solid fa-triangle-exclamation me-2"></i>Xác nhận xóa</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="deleteConfirmMessage">Bạn có chắc chắn muốn xóa bản ghi này?</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-danger btn-sm" id="btnConfirmDelete">Đồng ý xóa</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script src="data-common.js"></script>
+  <script>
+
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzbg88Qa2W4OyRePPY_LZJPbvMrA_RUrvWvs1uvGF2ldXA3_BZQHl0JJILi3d5vFaz_/exec"; // Dán URL /exec của Apps Script ngành này.
+    function dateInputValue(value) {
+      const text=String(value ?? '').trim().replace(/\s+\d{1,2}:\d{2}(?::\d{2})?.*$/, '');
+      if (/^\d{4}-\d{2}-\d{2}$/.test(text)) return text;
+      const local=text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      if(local) return local[3]+'-'+local[2].padStart(2,'0')+'-'+local[1].padStart(2,'0');
+      if(/^\d{4}-\d{2}-\d{2}T/.test(text)) {
+        const date=new Date(text);
+        if(!Number.isNaN(date.getTime())) {
+          const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Ho_Chi_Minh',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date);
+          const get=type=>parts.find(p=>p.type===type).value;
+          return get('year')+'-'+get('month')+'-'+get('day');
+        }
+      }
+      return text;
+    }
+    function displayDate(value) {
+      const iso=dateInputValue(value);
+      return /^\d{4}-\d{2}-\d{2}$/.test(iso) ? iso.slice(8,10)+'/'+iso.slice(5,7)+'/'+iso.slice(0,4) : iso;
+    }
+    // URL /exec phải thuộc bản triển khai của cuuchienbinh.gs mới.
+    async function parseApiResponse(response) {
+      if (!response.ok) throw new Error('Máy chủ trả lỗi HTTP '+response.status+'. Kiểm tra quyền truy cập bản triển khai.');
+      const text=await response.text();
+      let data;
+      try { data=JSON.parse(text); }
+      catch (_) {
+        throw new Error('Apps Script chưa trả dữ liệu JSON. Hãy cập nhật triển khai bằng cuuchienbinh.gs mới và kiểm tra WEB_APP_URL.');
+      }
+      if(data && (data.status==='error' || data.success===false || data.result==='error')) throw new Error(data.message || 'Apps Script báo lỗi.');
+      return data;
+    }
+    const ACCOUNT_API_URL = "https://script.google.com/macros/s/AKfycbzkTqhPrqtXpUNI_Pqh3kim1sX6jgVuNQJAqP8jZ5jm63b7nPNByVe6ehyzQw9CnWkv/exec"; // API tài khoản: quyền và trạng thái từ Sheet user
+
+    let fieldGroups=[];
+    let columnCount=0;
+    let schemaLoaded=false;
+
+    let sheetSchema = null;
+    let globalData = [];
+    let pendingDeleteType = '';
+    let pendingDeleteId = null;
+    let isViewMode = true; // Tài khoản đăng nhập lấy quyền từ Sheet; chế độ mặc định được chỉnh sửa.
+
+    const recordModal = new bootstrap.Modal(document.getElementById('recordModal'));
+    const sheetModal = new bootstrap.Modal(document.getElementById('sheetModal'));
+    const confirmModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+
+    let ubktAccessGranted = false;
+    let ubktCheckingAccess = false;
+    let ubktAccessDenied = false;
+    function openedFromManagementPage() {
+      try {
+        if (window.parent === window) return false;
+        const parentPath = window.parent.location.pathname;
+        const parentFile = decodeURIComponent(parentPath.split('/').pop() || '').toLowerCase();
+        return parentFile === 'quanly.html';
+      } catch (err) { return false; }
+    }
+    function normalizeUbktDepartment(value) {
+      return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase().replace(/[^a-z0-9]/g,'');
+    }
+    function isUbktDepartment(value) {
+      return ["hoicuuchienbinh", "hoicuuchienbinhxakhanhbinh"].includes(normalizeUbktDepartment(value));
+    }
+    async function denyUbktAccess(message) {
+      ubktAccessGranted=false;applyUserRole('view');
+      document.body.classList.add('ubkt-access-pending');
+      if (ubktAccessDenied) return;ubktAccessDenied=true;
+      await Swal.fire({icon:'warning',title:'Không được truy cập Hội Cựu chiến binh',text:message,allowOutsideClick:false,confirmButtonText:'Về trang đăng nhập'});
+      location.replace('index.html');
+    }
+    function grantUbktAccess(role) {
+      const first = !ubktAccessGranted;
+      ubktAccessGranted=true;document.body.classList.remove('ubkt-access-pending');applyUserRole(role);
+      if(first){loadSheetData();}
+    }
+    window.onload = function() {
+      initUserProfile();generateTableHeaderAndForm();applyUserRole('view');checkAccountLockImmediate();
+    };
+
+    // --- HÀM ĐỐI CHIẾU VÀ ÁP DỤNG PHÂN QUYỀN TỰ ĐỘNG TỪ CSDL ---
+    function applyUserRole(role) {
+      isViewMode = (String(role || '').trim().toLowerCase() !== 'edit');
+      const directEditor = document.getElementById('btnDirectSheetEditor');
+      if (directEditor) directEditor.style.display = isViewMode ? 'none' : 'inline-block';
+      if (isViewMode) { sheetModal.hide(); document.getElementById('sheetIframe').src = ''; }
+      renderUploadQueue();
+      const btnAddRecord = document.getElementById('btnAddRecord');
+      const btnUploadFile = document.getElementById('btnUploadFile');
+      const roleBadge = document.getElementById('userRoleBadge');
+
+      if (isViewMode) {
+        if (btnAddRecord) btnAddRecord.style.display = 'none';
+        if (btnUploadFile) btnUploadFile.style.display = 'none';
+        if (roleBadge) {
+          roleBadge.className = 'badge bg-info text-dark px-2 py-1';
+          roleBadge.innerText = 'Chỉ xem';
+        }
+      } else {
+        if (btnAddRecord) btnAddRecord.style.display = 'inline-block';
+        if (btnUploadFile) btnUploadFile.style.display = 'inline-block';
+        if (roleBadge) {
+          roleBadge.className = 'badge bg-success px-2 py-1';
+          roleBadge.innerText = 'Chỉnh sửa';
+        }
+      }
+      
+      // Vẽ lại bảng dữ liệu theo phân quyền tự động nhận diện
+      if (globalData.length > 0) {
+        renderTable(globalData);
+      }
+    }
+
+    // --- QUẢN LÝ TÀI KHOẢN VÀ MENU CÁ NHÂN ---
+    function initUserProfile() {
+      const fallbackDept = 'Hội Cựu chiến binh';
+      if (openedFromManagementPage()) {
+        document.getElementById('headerFullName').innerText='Cấp quản lý';
+        document.getElementById('dropdownFullName').innerText='Cấp quản lý xã Khánh Bình';
+        document.getElementById('dropdownDept').innerText='Quản lý ngành Hội Cựu chiến binh';
+        document.getElementById('dropdownUsername').innerText='xakhanhbinh';
+        document.getElementById('avatarText').innerText='Q';
+        return;
+      }
+
+      const username = sessionStorage.getItem('currentUser') || 'canbo_cuuchienbinh';
+      const fullname = sessionStorage.getItem('currentFullName') || 'Cán bộ Hội Cựu chiến binh';
+      const dept = sessionStorage.getItem('currentDept') || fallbackDept;
+
+      document.getElementById('headerFullName').innerText = fullname;
+      document.getElementById('dropdownFullName').innerText = fullname;
+      document.getElementById('dropdownDept').innerText = dept;
+      document.getElementById('dropdownUsername').innerText = username;
+
+      const firstLetter = fullname.trim().charAt(0).toUpperCase() || 'C';
+      document.getElementById('avatarText').innerText = firstLetter;
+    }
+
+    function toggleProfileDropdown(e) {
+      e.stopPropagation();
+      document.getElementById('profileDropdown').classList.toggle('active');
+    }
+
+    window.addEventListener('click', function(e) {
+      const dropdown = document.getElementById('profileDropdown');
+      const btn = document.getElementById('userProfileBtn');
+      if (dropdown && !dropdown.contains(e.target) && !btn.contains(e.target)) {
+        dropdown.classList.remove('active');
+      }
+    });
+
+    function handleLogout() {
+      Swal.fire({
+        title: 'Đăng xuất hệ thống?',
+        text: 'Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#880e4f',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Đăng xuất',
+        cancelButtonText: 'Hủy bỏ'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          sessionStorage.clear();
+          window.location.href = 'index.html';
+        }
+      });
+    }
+
+    // --- KIỂM TRA TRẠNG THÁI VÀ ĐỐI CHIẾU QUYỀN TỰ ĐỘNG TỪ GOOGLE SHEETS ---
+    async function checkAccountLockImmediate() {
+      if(ubktCheckingAccess || ubktAccessDenied)return;ubktCheckingAccess=true;
+      try {
+        if (openedFromManagementPage()) {
+          document.getElementById('accountStatusText').innerText='● Cấp quản lý';
+          grantUbktAccess('edit');
+          return;
+        }
+        const username=String(sessionStorage.getItem('currentUser') || '').trim();
+        if(!username){await denyUbktAccess('Bạn cần đăng nhập tài khoản');return;}
+        // Tài khoản cấp quản lý được giữ quyền truy cập các trang ngành.
+        if(username.toLowerCase()==='xakhanhbinh'){grantUbktAccess('edit');return;}
+        const response=await fetch(ACCOUNT_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'getUsers'})});
+        if(!response.ok)throw new Error('Không kết nối được API tài khoản.');
+        const data=await response.json();
+        if(data.result!=='success'||!Array.isArray(data.users))throw new Error(data.message || 'Không đối chiếu được tài khoản.');
+        const user=data.users.find(u=>String(u.username || '').trim().toLowerCase()===username.toLowerCase());
+        if(!user){await denyUbktAccess('Tài khoản không tồn tại trong hệ thống.');return;}
+        if(String(user.status || '').trim().toLowerCase()!=='active'){await denyUbktAccess('Tài khoản đã bị khóa hoặc chưa hoạt động.');return;}
+        if(!isUbktDepartment(user.department || user.dept || user['Ngành'])){await denyUbktAccess('Tài khoản thuộc ngành khác. Chỉ ngành Hội Cựu chiến binh được truy cập trang này.');return;}
+        sessionStorage.setItem('currentFullName',user.fullname || 'Cán bộ Hội Cựu chiến binh');sessionStorage.setItem('currentDept',user.department || user.dept || user['Ngành']);initUserProfile();
+        document.getElementById('accountStatusText').innerText='● Hoạt động';
+        grantUbktAccess(user.permission || user.role || 'view');
+      }catch(err){await denyUbktAccess(err.message || 'Không xác nhận được ngành của tài khoản.');}
+      finally{ubktCheckingAccess=false;}
+    }
+
+    setInterval(()=>{if(!document.hidden)checkAccountLockImmediate();}, 60000);
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkAccountLockImmediate();});
+
+    function showToast(message, type = 'success') {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: type === 'error' ? 'error' : 'success',
+        title: message,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+      });
+    }
+
+    function renderRows(data) {
+      data = data || [];
+      const tbody = document.getElementById('tableBody');
+      
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="${columnCount+1}" class="text-center py-4 text-muted">Chưa có dữ liệu nào trong bảng.</td></tr>`;
+        return;
+      }
+
+      let html = '';
+      data.forEach(row => {
+        html += `<tr>
+          <td class="text-center">`;
+        
+        if (isViewMode) {
+          // Chế độ View: Chỉ hiển thị nút xem chi tiết
+          html += `<button class="btn btn-sm btn-outline-primary" title="Xem chi tiết" onclick="viewRecord(${row.rowNum})"><i class="fa-solid fa-eye"></i></button>`;
+        } else {
+          // Chế độ Edit: Đầy đủ các thao tác
+          html += `
+            <button class="btn btn-sm btn-outline-danger me-1" title="Sửa" onclick="editRecord(${row.rowNum})"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn btn-sm btn-outline-secondary" title="Xóa" onclick="deleteRecord(${row.rowNum})"><i class="fa-solid fa-trash"></i></button>`;
+        }
+
+        html += `</td>`;
+          
+        for (let i = 1; i <= columnCount; i++) {
+          let cellValue = row['c' + i] ?? '';
+          if (i === 1) cellValue = displayDate(cellValue);
+          html += `<td>${String(cellValue).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</td>`;
+        }
+        html += `</tr>`;
+      });
+      tbody.innerHTML = html;
+    }
+
+    function openModal() {
+      if (!ubktAccessGranted || isViewMode || !schemaLoaded) return;
+      document.getElementById('recordForm').reset();
+      document.getElementById('rowNum').value = '';
+      document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-plus-circle me-2"></i>Thêm dữ liệu Hội Cựu chiến binh';
+      
+      const inputs = document.querySelectorAll('#recordForm input');
+      inputs.forEach(input => input.disabled = false);
+      document.getElementById('modalFooter').style.display = 'flex';
+
+      recordModal.show();
+    }
+
+    function editRecord(rowNum) {
+      if (!ubktAccessGranted || isViewMode) return;
+      const record = globalData.find(item => item.rowNum == rowNum);
+      if (!record) return;
+
+      document.getElementById('rowNum').value = record.rowNum;
+      for (let i = 1; i <= columnCount; i++) {
+        let val = record['c' + i] ?? '';
+        if (i === 1) val = displayDate(val);
+        const inputEl = document.getElementById('c' + i);
+        if (inputEl) {
+          inputEl.value = val;
+          inputEl.disabled = false;
+        }
+      }
+      document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square me-2"></i>Chỉnh Sửa Dữ Liệu Hội Cựu chiến binh`;
+      document.getElementById('modalFooter').style.display = 'flex';
+      recordModal.show();
+    }
+
+    function viewRecord(rowNum) {
+      if (!ubktAccessGranted) return;
+      const record = globalData.find(item => item.rowNum == rowNum);
+      if (!record) return;
+
+      document.getElementById('rowNum').value = record.rowNum;
+      for (let i = 1; i <= columnCount; i++) {
+        let val = record['c' + i] ?? '';
+        if (i === 1) val = displayDate(val);
+        const inputEl = document.getElementById('c' + i);
+        if (inputEl) {
+          inputEl.value = val;
+          inputEl.disabled = true;
+        }
+      }
+      document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-eye me-2"></i>Xem Chi Tiết Dữ Liệu Hội Cựu chiến binh`;
+      document.getElementById('modalFooter').style.display = 'none';
+      recordModal.show();
+    }
+
+    function saveData() {
+      if (!ubktAccessGranted || isViewMode) return;
+      const payload = { rowNum: document.getElementById('rowNum').value };
+      for (let i = 1; i <= columnCount; i++) {
+        const inputEl = document.getElementById('c' + i);
+        payload['c' + i] = inputEl ? inputEl.value : '';
+      }
+
+      payload.c1 = String(payload.c1 ?? '').trim();
+      fetch(WEB_APP_URL, {
+        method: 'POST',
+        headers: {'Content-Type':'text/plain;charset=utf-8'},
+        body: JSON.stringify({ action: 'save', data: payload })
+      })
+      .then(parseApiResponse)
+      .then(result => {
+        if (result.status === 'success') {
+          recordModal.hide();
+          showToast('Lưu dữ liệu thành công!');
+          loadSheetData();
+        } else {
+          showToast(result.message || 'Lỗi lưu dữ liệu!', 'error');
+        }
+      });
+    }
+
+    function deleteRecord(rowNum) {
+      if (!ubktAccessGranted || isViewMode) return;
+      const record = globalData.find(item => item.rowNum == rowNum);
+      pendingDeleteType = 'sheet';
+      pendingDeleteId = rowNum;
+      document.getElementById('deleteConfirmMessage').innerText = 'Bạn có chắc chắn muốn xóa bản ghi này?';
+      confirmModal.show();
+    }
+
+    function removeDriveFile(fileId) {
+      if (!ubktAccessGranted || isViewMode) return;
+      pendingDeleteType = 'drive';
+      pendingDeleteId = fileId;
+      document.getElementById('deleteConfirmMessage').innerText = 'Bạn có chắc chắn muốn xóa tệp tin này?';
+      confirmModal.show();
+    }
+
+    document.getElementById('btnConfirmDelete').addEventListener('click', function() {
+      confirmModal.hide();
+
+      if (pendingDeleteType === 'sheet') {
+        fetch(WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'delete', rowNum: pendingDeleteId })
+        })
+        .then(parseApiResponse)
+        .then(res => {
+          if (res.status === 'success') {
+            showToast('Đã xóa thành công!');
+            loadSheetData();
+          } else {
+            showToast(res.message || 'Lỗi khi xóa!', 'error');
+          }
+        });
+      } else if (pendingDeleteType === 'drive') {
+        fetch(WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'deleteFile', fileId: pendingDeleteId })
+        })
+        .then(parseApiResponse)
+        .then(res => {
+          if (res.success) {
+            showToast('Đã xóa tệp tin thành công!');
+            loadDriveFiles();
+          } else {
+            showToast('Lỗi xóa tệp: ' + res.message, 'error');
+          }
+        });
+      }
+    });
+
+    function openGoogleSheetModal() {
+      if (!ubktAccessGranted) return;
+      if (isViewMode) { showToast('Tài khoản chỉ xem không được mở trình chỉnh sửa.', 'error'); return; }
+      fastRead(`${WEB_APP_URL}?action=getSheetEmbedUrl`)
+        .then(parseApiResponse)
+        .then(data => {
+          if (isViewMode) return;
+          if (data.url) {
+            document.getElementById('sheetIframe').src = data.url;
+            sheetModal.show();
+          } else {
+            showToast('Không thể mở trình chỉnh sửa trực tiếp!', 'error');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          showToast('Lỗi kết nối khi mở trình chỉnh sửa!', 'error');
+        });
+    }
+
+    function downloadExcelFromSheet() {
+      if (!ubktAccessGranted) return;
+      showToast('Đang tạo tệp Báo cáo Excel...', 'success');
+      fastRead(`${WEB_APP_URL}?action=exportExcel`)
+        .then(parseApiResponse)
+        .then(data => {
+          if (data.url) {
+            window.open(data.url, '_blank');
+          } else {
+            showToast('Không thể tạo file báo cáo!', 'error');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          showToast('Lỗi khi xuất file báo cáo!', 'error');
+        });
+    }
+
+    function loadDriveFiles() {
+      if (!ubktAccessGranted) return;
+      const tbody = document.getElementById('fileListBody');
+      tbody.innerHTML = '<tr><td colspan="4" class="text-center py-3">Đang tải danh sách tệp...</td></tr>';
+      
+      fastRead(`${WEB_APP_URL}?action=getDriveFiles`)
+        .then(parseApiResponse)
+        .then(res => {
+          if (!res.success || !res.files || res.files.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-3 text-muted">Thư mục trống hoặc chưa có tệp nào.</td></tr>';
+            return;
+          }
+          let html = '';
+          res.files.forEach(f => {
+            const downloadUrl = f.directDownloadUrl || f.downloadUrl;
+            html += `<tr>
+              <td><a href="${f.downloadUrl}" target="_blank" class="text-decoration-none font-weight-bold" style="color: var(--primary-color);">${f.name}</a></td>
+              <td>Tệp tin</td>
+              <td>${f.dateCreated}</td>
+              <td class="text-center">
+                <a href="${downloadUrl}" class="btn btn-sm btn-outline-success me-1" title="Tải về"><i class="fa-solid fa-download"></i></a>`;
+            
+            if (!isViewMode) {
+              html += `<button class="btn btn-sm btn-outline-danger" title="Xóa" onclick="removeDriveFile('${f.id}')"><i class="fa-solid fa-trash"></i></button>`;
+            }
+
+            html += `</td>
+            </tr>`;
+          });
+          tbody.innerHTML = html;
+        });
+    }
+
+    const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+    let uploadQueue = [];
+    let uploadingFiles = false;
+    function uploadSelectedFile(input) {
+      if (!ubktAccessGranted) return;
+      if (isViewMode || uploadingFiles) {input.value='';showToast('Hiện không thể chọn tệp tải lên.', 'error');return;}
+      for (const file of Array.from(input.files || [])) {
+        if (file.size > MAX_UPLOAD_BYTES) {showToast(file.name + ': vượt giới hạn 10 MB.', 'error');continue;}
+        if (uploadQueue.some(item => item.file.name===file.name && item.file.size===file.size && item.file.lastModified===file.lastModified)) continue;
+        uploadQueue.push({file,status:'Chờ tải lên',state:'pending'});
+      }
+      input.value=''; renderUploadQueue();
+    }
+    function renderUploadQueue() {
+      document.getElementById('uploadQueuePanel').classList.toggle('d-none',uploadQueue.length===0);
+      const list=document.getElementById('uploadQueueList');list.replaceChildren();
+      uploadQueue.forEach((item,index)=>{
+        const row=document.createElement('div');row.className='d-flex flex-wrap align-items-center gap-2 border-bottom py-2';
+        const name=document.createElement('span');name.className='flex-grow-1 text-break';name.textContent=item.file.name;
+        const size=document.createElement('span');size.className='small text-muted';size.textContent=(item.file.size/1024/1024).toFixed(2)+' MB';
+        const status=document.createElement('span');status.className='small '+(item.state==='success'?'text-success':item.state==='error'?'text-danger':'text-muted');status.textContent=item.status;
+        const remove=document.createElement('button');remove.type='button';remove.className='btn btn-sm btn-outline-secondary';remove.textContent='Bỏ';remove.disabled=uploadingFiles;
+        remove.onclick=()=>{uploadQueue.splice(index,1);renderUploadQueue();};
+        row.append(name,size,status,remove);list.append(row);
+      });
+      document.getElementById('btnStartUpload').disabled=uploadingFiles || isViewMode || !uploadQueue.some(item=>item.state!=='success');
+      document.getElementById('btnClearUpload').disabled=uploadingFiles;
+      document.getElementById('btnUploadFile').disabled=uploadingFiles;
+    }
+    function clearUploadQueue() {
+      if (uploadingFiles) return;uploadQueue=[];renderUploadQueue();document.getElementById('uploadSummary').textContent='';
+    }
+    function readUploadFile(file) {
+      return new Promise((resolve,reject)=>{
+        const reader=new FileReader();reader.onload=()=>resolve(reader.result);
+        reader.onerror=()=>reject(new Error('Không đọc được tệp.'));reader.onabort=()=>reject(new Error('Đã dừng đọc tệp.'));
+        reader.readAsDataURL(file);
+      });
+    }
+    async function startUploadQueue() {
+      if (!ubktAccessGranted) return;
+      if (uploadingFiles || isViewMode) {showToast('Tài khoản chưa có quyền tải lên.', 'error');return;}
+      const pending=uploadQueue.filter(item=>item.state!=='success');if(!pending.length)return;
+      uploadingFiles=true;renderUploadQueue();
+      let done=0,failed=0;
+      try {
+        for (const item of pending) {
+          if(isViewMode){item.state='error';item.status='Dừng do quyền đã thay đổi';failed++;renderUploadQueue();continue;}
+          try {
+            item.status='Đang đọc tệp…';item.state='uploading';renderUploadQueue();
+            const base64Data=await readUploadFile(item.file);
+            if(isViewMode)throw new Error('Quyền tải lên đã thay đổi.');
+            item.status='Đang lưu tệp vào kho lưu trữ…';renderUploadQueue();
+            const response=await fetch(WEB_APP_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'uploadFile',base64Data,fileName:item.file.name,mimeType:item.file.type || 'application/octet-stream'})});
+            if(!response.ok)throw new Error('Lỗi máy chủ HTTP '+response.status);
+            const result=await response.json();if(result.success!==true)throw new Error(result.message || 'Tải lên không thành công.');
+            item.state='success';item.status='Đã tải lên';done++;
+          }catch(err){item.state='error';item.status=err.message || 'Tải lên lỗi';failed++;}
+          document.getElementById('uploadSummary').textContent='Đã xử lý '+(done+failed)+'/'+pending.length+' tệp';renderUploadQueue();
+        }
+      }finally{
+        uploadingFiles=false;renderUploadQueue();
+        document.getElementById('uploadSummary').textContent=done+' thành công, '+failed+' lỗi. Có thể bấm tải lên để thử lại tệp lỗi.';
+        if(done)loadDriveFiles();
+      }
+    }
+  </script>
+</body>
+</html>
